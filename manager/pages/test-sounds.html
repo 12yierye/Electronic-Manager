@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>音效测试页面</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        .sound-test-container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .sound-test-panel {
+            background: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 0px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: none;
+        }
+        
+        .sound-button {
+            background: #000000;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 10px 10px 0;
+            display: inline-block;
+            vertical-align: top;
+        }
+        
+        .sound-button:hover {
+            background: #333333;
+        }
+        
+        .sound-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #000000;
+        }
+        
+        .sound-description {
+            color: #000000;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .sound-type-buttons {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        
+        .sound-type-button {
+            background: #ffffff;
+            color: #000000;
+            padding: 8px 16px;
+            border: 1px solid #000000;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-block;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .sound-type-button:hover {
+            background: #f0f0f0;
+        }
+        
+        /* 移除导航栏相关样式 */
+        body {
+            padding-top: 0;
+            background: #ffffff;
+        }
+        button {
+            border: 1px solid #000000;
+        }
+        h1 {
+            color: #000000;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sound-test-container">
+        <h1>音效测试页面</h1>
+        
+        <div class="sound-test-panel">
+            <div class="sound-title">高优先级通知音效</div>
+            <div class="sound-description">
+                用于重要通知的音效，比如错误提示或紧急消息。
+            </div>
+            <div class="sound-type-buttons">
+                <button class="sound-type-button" onclick="playSound('high_priority', 'default')">默认音效</button>
+                <button class="sound-type-button" onclick="playSound('high_priority', 'soft')">柔和音效</button>
+                <button class="sound-type-button" onclick="playSound('high_priority', 'electronic')">电子音效</button>
+                <button class="sound-type-button" onclick="playSound('high_priority', 'natural')">自然音效</button>
+            </div>
+        </div>
+        
+        <div class="sound-test-panel">
+            <div class="sound-title">中优先级通知音效</div>
+            <div class="sound-description">
+                用于一般性通知的音效，如成功提示或普通警告。
+            </div>
+            <div class="sound-type-buttons">
+                <button class="sound-type-button" onclick="playSound('medium_priority', 'default')">默认音效</button>
+                <button class="sound-type-button" onclick="playSound('medium_priority', 'soft')">柔和音效</button>
+                <button class="sound-type-button" onclick="playSound('medium_priority', 'electronic')">电子音效</button>
+                <button class="sound-type-button" onclick="playSound('medium_priority', 'natural')">自然音效</button>
+            </div>
+        </div>
+        
+        <div class="sound-test-panel">
+            <div class="sound-title">低优先级通知音效</div>
+            <div class="sound-description">
+                用于非重要通知的音效，如信息提示或状态更新。
+            </div>
+            <div class="sound-type-buttons">
+                <button class="sound-type-button" onclick="playSound('low_priority', 'default')">默认音效</button>
+                <button class="sound-type-button" onclick="playSound('low_priority', 'soft')">柔和音效</button>
+                <button class="sound-type-button" onclick="playSound('low_priority', 'electronic')">电子音效</button>
+                <button class="sound-type-button" onclick="playSound('low_priority', 'natural')">自然音效</button>
+            </div>
+        </div>
+        
+        <!-- 新增生成音效按钮区域 -->
+        <div class="sound-test-panel">
+            <div class="sound-title">生成音效文件</div>
+            <div class="sound-description">
+                点击下面的按钮显示如何运行音效生成脚本，重新生成所有音效文件。
+            </div>
+            <button class="sound-button" onclick="showGenerateInstructions()">生成所有音效</button>
+        </div>
+    </div>
+
+    <script src="../scripts/base.js"></script>
+    <script>
+        // 创建音频元素
+        let soundPlayers = {};
+        
+        // 初始化音频系统
+        function initAudio() {
+            try {
+                // 创建默认音效元素
+                soundPlayers['high_priority_default'] = new Audio();
+                soundPlayers['high_priority_default'].src = '../res/sounds/default/high_priority.wav';
+                
+                soundPlayers['medium_priority_default'] = new Audio();
+                soundPlayers['medium_priority_default'].src = '../res/sounds/default/medium_priority.wav';
+                
+                soundPlayers['low_priority_default'] = new Audio();
+                soundPlayers['low_priority_default'].src = '../res/sounds/default/low_priority.wav';
+                
+                // 创建柔和音效元素
+                soundPlayers['high_priority_soft'] = new Audio();
+                soundPlayers['high_priority_soft'].src = '../res/sounds/soft/high_priority.wav';
+                
+                soundPlayers['medium_priority_soft'] = new Audio();
+                soundPlayers['medium_priority_soft'].src = '../res/sounds/soft/medium_priority.wav';
+                
+                soundPlayers['low_priority_soft'] = new Audio();
+                soundPlayers['low_priority_soft'].src = '../res/sounds/soft/low_priority.wav';
+                
+                // 创建电子风格音效元素
+                soundPlayers['high_priority_electronic'] = new Audio();
+                soundPlayers['high_priority_electronic'].src = '../res/sounds/electronic/high_priority.wav';
+                
+                soundPlayers['medium_priority_electronic'] = new Audio();
+                soundPlayers['medium_priority_electronic'].src = '../res/sounds/electronic/medium_priority.wav';
+                
+                soundPlayers['low_priority_electronic'] = new Audio();
+                soundPlayers['low_priority_electronic'].src = '../res/sounds/electronic/low_priority.wav';
+                
+                // 创建自然风格音效元素
+                soundPlayers['high_priority_natural'] = new Audio();
+                soundPlayers['high_priority_natural'].src = '../res/sounds/natural/high_priority.wav';
+                
+                soundPlayers['medium_priority_natural'] = new Audio();
+                soundPlayers['medium_priority_natural'].src = '../res/sounds/natural/medium_priority.wav';
+                
+                soundPlayers['low_priority_natural'] = new Audio();
+                soundPlayers['low_priority_natural'].src = '../res/sounds/natural/low_priority.wav';
+                
+                // 预加载音频
+                Object.values(soundPlayers).forEach(player => {
+                    player.load();
+                });
+            } catch (e) {
+                console.warn('音频初始化失败:', e);
+            }
+        }
+        
+        // 播放指定音效
+        function playSound(priority, type) {
+            const soundKey = `${priority}_${type}`;
+            
+            console.log('尝试播放音效:', soundKey); // 调试信息
+            
+            try {
+                if (soundPlayers[soundKey]) {
+                    // 重置音频到开头并播放
+                    soundPlayers[soundKey].currentTime = 0;
+                    const playPromise = soundPlayers[soundKey].play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.catch(e => {
+                            console.warn('播放声音失败:', e);
+                            alert(`播放声音失败: ${e.message}`);
+                        });
+                    }
+                } else {
+                    alert(`未找到音效: ${soundKey}`);
+                }
+            } catch (e) {
+                console.warn('播放声音失败:', e);
+                alert(`播放声音失败: ${e.message}`);
+            }
+        }
+        
+        // 初始化音频系统
+        document.addEventListener('DOMContentLoaded', function() {
+            initAudio();
+        });
+        
+        // 显示生成音效的指令说明
+        function showGenerateInstructions() {
+            const instruction = `要在浏览器外重新生成音效文件，请按以下步骤操作：
+
+1. 打开命令提示符（cmd）或 PowerShell
+2. 导航到项目根目录（包含 generate-sounds.js 文件的目录）
+3. 运行命令：node generate-sounds.js
+
+这将重新生成所有四种风格的音效文件。`;
+            
+            alert(instruction);
+        }
+    </script>
+</body>
+</html>

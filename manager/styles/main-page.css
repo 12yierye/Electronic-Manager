@@ -1,0 +1,242 @@
+/* main页面样式 */
+
+/* 内容面板基础样式 */
+.content-panel {
+    padding: 20px;
+    margin: 20px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity var(--transition-duration) ease, transform var(--transition-duration) ease;
+    will-change: opacity, transform;
+    pointer-events: auto;
+    padding-bottom: 100px;
+}
+
+.content-panel.fade-out {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+}
+
+.content-panel.fade-in {
+    opacity: 0;
+    transform: translateY(8px);
+    pointer-events: none;
+}
+
+.content-panel.fade-in.fade-in-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.content-panel h2 {
+    margin-top: 0;
+    color: var(--text-color);
+}
+
+.content-panel p {
+    color: var(--text-color);
+    line-height: 1.6;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+/* 面板切换相关样式 */
+.main-overview-panel {
+    display: block;
+}
+
+.main-details-panel {
+    display: none;
+}
+
+.main-statistics-panel {
+    display: none;
+}
+
+/* 标签导航样式 */
+.labels {
+    display: flex;
+    gap: calc(var(--font-size, 16px) * 0.625);
+    margin: calc(var(--font-size, 16px) * 1.25) 0 calc(var(--font-size, 16px) * 1.25) calc(var(--font-size, 16px) * 1.25);
+    padding-bottom: calc(var(--font-size, 16px) * 0.5);
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+}
+
+.labelsButton {
+    padding: calc(var(--font-size, 16px) * 0.625) calc(var(--font-size, 16px) * 1.25);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: inherit;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.labelsButton.active {
+    color: var(--active-color);
+    font-weight: bold;
+}
+
+.labels .underline {
+    position: absolute;
+    bottom: -1px;
+    height: 2px;
+    background-color: var(--active-color);
+    transition: all var(--transition-duration) ease;
+}
+
+.recent-events-header {
+    margin-top: 15px;
+}
+
+/* 信息网格样式 */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.info-card {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.info-card h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--text-color);
+}
+
+.info-card p {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+    color: var(--active-color);
+}
+
+/* 设备表格样式 */
+.device-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: visible;
+    margin-top: 15px;
+}
+
+.device-table th,
+.device-table td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color) !important;
+}
+
+.device-table th {
+    background-color: var(--nav-bg);
+    font-weight: bold;
+}
+
+.device-table tr:last-child td {
+    border-bottom: none;
+}
+
+.device-table tr:hover {
+    background-color: var(--nav-hover);
+}
+
+/* 状态标签样式 */
+.status {
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: inherit;
+}
+
+.status.online {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+
+.status.offline {
+    background-color: rgba(108, 117, 125, 0.2);
+    color: #6c757d;
+}
+
+.status.error {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #bd2130;
+    font-weight: bold;
+}
+
+.status.warning {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #e0a800;
+    font-weight: bold;
+}
+
+/* 统计表格警告、错误行样式 */
+tr.warning {
+    background-color: rgba(255, 193, 7, 0.6);
+}
+
+tr.error {
+    background-color: rgba(220, 53, 69, 0.6);
+}
+
+/* 主题特定样式 */
+.theme-light .device-table tr.warning,
+.theme-light .device-table tr.error {
+    color: #000 !important;
+}
+
+.theme-dark .device-table tr.warning {
+    color: #000 !important;
+}
+
+.theme-dark .device-table tr.error {
+    color: #fff !important;
+}
+
+.theme-high-contrast .device-table tr.warning,
+.theme-high-contrast .device-table tr.error {
+    color: #fff !important;
+}
+
+/* 图表容器样式 */
+.chart-container {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: auto !important;
+}
+
+.time-container {
+    margin-bottom: 10px;
+    text-align: center;
+}
+.time-label {
+    font-size: 18px;
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+.time-value {
+    font-size: 24px;
+    color: var(--text-color);
+}

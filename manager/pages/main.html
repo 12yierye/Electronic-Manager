@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../styles/main.css">
+<link rel="stylesheet" href="../styles/main-page.css">
+<link rel="stylesheet" href="../styles/notification.css">
+<title>Basic Info - Electronic</title>
+</head>
+<body class="page-fade-in">
+    <div class="nav" id="nav">
+        <img src="../res/Electronic Logo.png" alt="Electronic Logo" class="logo" onclick="toNewWindow('http:/8.138.227.135')"></img>
+        <div class="nav-buttons">
+            <button type="button" class="nav-btn active" data-text="Basic Info" data-href="./main.html" data-theme-action="restore">
+                ⚪<span>Basic</span>
+            </button>
+            <button type="button" class="nav-btn" data-text="Accounts" data-href="./accounts.html" data-theme-action="restore">
+                👥<span>Accounts</span>
+            </button>
+            <button type="button" class="nav-btn" data-text="Settings" data-href="./settings.html" data-theme-action="save">
+                ⚙️<span>Settings</span>
+            </button>
+        </div>
+        <button type="button" class="toggle-nav" id="toggleNav">展开</button>
+    </div>
+
+    <div class="labels" id="labels">
+        <button class="labelsButton active" data-category="overview">概览</button>
+        <button class="labelsButton" data-category="details">详细信息</button>
+        <button class="labelsButton" data-category="statistics">统计</button>
+    </div>
+
+    <div class="content-panel main-overview-panel" id="overview-panel">
+        <div class="time-container">
+            <h2 class="time-label">当前时间</h2>
+            <p class="time-value" id="currentTime">Loading...</p>
+        </div>
+        <h2>服务器状态概览</h2>
+        <p>当前服务器运行状态的基本信息</p>
+        <button class="refresh" onclick="toOriWindow('main.html')" type="button">刷新</button>
+        <h3>处理器资源</h3>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>CPU 使用率</h3>
+                <p id="cpuUsage">Loading...</p>
+            </div>
+            <div class="info-card">
+                <h3>活动进程</h3>
+                <p id="processCount">Loading...</p>
+            </div>
+        </div>
+        
+        <h3>内存与存储</h3>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>内存使用</h3>
+                <p id="memoryUsage">Loading...</p>
+            </div>
+            <div class="info-card">
+                <h3>磁盘使用</h3>
+                <p id="diskUsage">Loading...</p>
+            </div>
+        </div>
+        
+        <h3>网络与连接</h3>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>网络流量</h3>
+                <p id="networkTraffic">Loading...</p>
+            </div>
+            <div class="info-card">
+                <h3>运行时间</h3>
+                <p id="uptime">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-panel main-details-panel" id="details-panel">
+        <h2>服务器详细信息</h2>
+        <table class="device-table">
+            <thead>
+                <tr>
+                    <th>参数</th>
+                    <th>值</th>
+                    <th>说明</th>
+                </tr>
+            </thead>
+            <tbody id="serverDetailsTable">
+                <tr>
+                    <td>操作系统</td>
+                    <td>Ubuntu 24.02 LTS</td>
+                    <td>服务器操作系统版本</td>
+                </tr>
+                <tr>
+                    <td>内核版本</td>
+                    <td>5.4.0-81-generic</td>
+                    <td>Linux 内核版本</td>
+                </tr>
+                <tr>
+                    <td>CPU 型号</td>
+                    <td>Intel Xeon E5-2680 v2</td>
+                    <td>处理器型号</td>
+                </tr>
+                <tr>
+                    <td>CPU 核心数</td>
+                    <td>2 核</td>
+                    <td>逻辑处理器核心数量</td>
+                </tr>
+                <tr>
+                    <td>总内存</td>
+                    <td>1 GiB</td>
+                    <td>RAM 容量与类型</td>
+                </tr>
+                <tr>
+                    <td>磁盘类型</td>
+                    <td>HDD</td>
+                    <td>主要存储设备类型</td>
+                </tr>
+                <tr>
+                    <td>公网 IP</td>
+                    <td>x.x.x.x</td>
+                    <td>服务器公网地址</td>
+                </tr>
+                <tr>
+                    <td>负载平均值</td>
+                    <td>0.65 / 0.58 / 0.59</td>
+                    <td>1 / 5 / 15分钟系统负载</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="content-panel main-statistics-panel" id="statistics-panel">
+        <h2>服务器事件统计</h2>
+        <div class="info-grid">
+            <div class="info-card">
+                <h3>今日请求数</h3>
+                <p id="todayRequests">24,587</p>
+            </div>
+            <div class="info-card">
+                <h3>错误请求数</h3>
+                <p id="errorRequests">12</p>
+            </div>
+            <div class="info-card">
+                <h3>最高并发数</h3>
+                <p id="peakConcurrency">1,248</p>
+            </div>
+            <div class="info-card">
+                <h3>数据传输量</h3>
+                <p id="dataTransfer">1.2 GiB</p>
+            </div>
+        </div>
+        
+        <h3 class="recent-events-header">近期重要事件</h3>
+        <table class="device-table">
+            <thead>
+                <tr>
+                    <th>时间</th>
+                    <th>事件类型</th>
+                    <th>描述</th>
+                    <th>等级</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td>2025-10-25 14:30</td>
+                    <td>系统重启</td>
+                    <td>计划维护重启完成</td>
+                    <td><span class="status online">信息</span></td>
+                </tr>
+
+                <tr>
+                    <td>2025-10-25 13:20</td>
+                    <td>备份完成</td>
+                    <td>每日数据备份成功</td>
+                    <td><span class="status online">信息</span></td>
+                </tr>
+                
+                <tr class="warning">
+                    <td>2025-10-24 09:15</td>
+                    <td>CPU峰值</td>
+                    <td>CPU使用率达到95%</td>
+                    <td><span class="status warning">警告</span></td>
+                </tr>
+
+                <tr class="warning">
+                    <td>2025-10-23 22:45</td>
+                    <td>安全扫描</td>
+                    <td>检测到异常登录尝试</td>
+                    <td><span class="status warning">警告</span></td>
+                </tr>
+                
+                <tr class="error">
+                    <td>2025-10-23 14:20</td>
+                    <td>数据库连接</td>
+                    <td>数据库连接超时错误</td>
+                    <td><span class="status error">错误</span></td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <script src="../scripts/base.js"></script>
+    <script src="../scripts/settings-global.js"></script>
+    <script src="../scripts/notification.js"></script>
+    <script src="../scripts/main.js"></script>
+</body>
+</html>

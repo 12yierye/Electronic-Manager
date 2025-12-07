@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../styles/main.css">
+<link rel="stylesheet" href="../styles/accounts.css">
+<title>Accounts - Electronic</title>
+</head>
+<body class="page-fade-in">
+	<div class="nav" id="nav">
+		<img src="../res/Electronic Logo.png" alt="Electronic Logo" class="logo" onclick="toNewWindow('http:/8.138.227.135')">
+		<div class="nav-buttons">
+			<button type="button" class="nav-btn" data-text="Basic Info" data-href="./main.html" data-theme-action="restore">⚪<span>Basic</span></button>
+			<button type="button" class="nav-btn active" data-text="Accounts" data-href="./accounts.html" data-theme-action="restore">👥<span>Accounts</span></button>
+			<button type="button" class="nav-btn" data-text="Settings" data-href="./settings.html" data-theme-action="save">⚙️<span>Settings</span></button>
+		</div>
+		<button type="button" class="toggle-nav" id="toggleNav">展开</button>
+	</div>
+
+	<div class="labels" id="labels">
+		<button class="labelsButton active" data-category="accounts-overview">概览</button>
+		<button class="labelsButton" data-category="accounts-list">列表</button>
+	</div>
+
+	<div class="content-panel accounts-overview-panel" id="accounts-overview-panel">
+		<h2>Accounts 概览</h2>
+		<p>简单的账户统计示例。</p>
+		<div class="info-grid">
+			<div class="info-card"><h3>总用户</h3><p id="totalUsers">1,234</p></div>
+			<div class="info-card"><h3>在线用户</h3><p id="onlineUsers">123</p></div>
+		</div>
+	</div>
+
+	<div class="content-panel accounts-list-panel" id="accounts-list-panel">
+		<h2>账户列表</h2>
+
+		<div class="account-search-container">
+			<input id="accountSearch" placeholder="搜索用户名..." class="account-search-input">
+			<button id="addAccountBtn" class="settings-btn">添加账户</button>
+			<div class="pagination-container"> <!-- 分页占位 -->
+				<span id="paginationInfo">1-10 / <span id="totalCount">3</span></span>
+			</div>
+		</div>
+
+		<table class="device-table" id="accountsTable">
+			<thead><tr><th>用户名</th><th>角色</th><th>状态</th><th>操作</th></tr></thead>
+			<tbody>
+				<tr data-id="1"><td>alice</td><td>admin</td><td><span class="status online">在线</span></td><td><button class="edit-btn settings-btn">编辑</button> <button class="delete-btn">删除</button></td></tr>
+				<tr data-id="2"><td>bob</td><td>user</td><td><span class="status offline">离线</span></td><td><button class="edit-btn settings-btn">编辑</button> <button class="delete-btn">删除</button></td></tr>
+				<tr data-id="3"><td>charlie</td><td>user</td><td><span class="status warning">警告</span></td><td><button class="edit-btn settings-btn">编辑</button> <button class="delete-btn">删除</button></td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- 编辑 / 添加 模态 -->
+	<div id="accountModal" class="account-modal">
+		<div class="account-modal-content">
+			<h3 id="modalTitle">编辑账户</h3>
+			<div class="account-modal-form">
+				<input id="modalUsername" placeholder="用户名" class="account-modal-input">
+				<select id="modalRole" class="account-modal-select" title="角色" data-custom>
+					<option value="admin">admin</option>
+					<option value="user">user</option>
+				</select>
+				<select id="modalStatus" class="account-modal-select" title="状态" data-custom>
+					<option value="online">在线</option>
+					<option value="offline">离线</option>
+					<option value="warning">警告</option>
+				</select>
+				<div class="account-modal-buttons">
+					<button id="modalCancel" class="settings-btn">取消</button>
+					<button id="modalSave" class="settings-btn account-modal-save-btn">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 兼容旧页面的全局 API（定义在 main.js 之前，阻止 wrapper 覆盖） -->
+	<script>
+		// 保持函数存在但在调用时优先使用 navigateWithFade（若可用）
+		function toOriWindow(href) {
+			if (typeof navigateWithFade === 'function') return navigateWithFade(href, 'restore');
+			window.location.href = href;
+		}
+		function toNewWindow(href) {
+			try { window.open(href, '_blank', 'noopener'); } catch(e) { window.location.href = href; }
+		}
+		function saveCurrentTheme() {
+			try { localStorage.setItem('savedThemeClass', document.documentElement.className || ''); showNotification && showNotification('主题已保存','success'); } catch(e) {}
+		}
+		function restoreOriginalTheme() {
+			try { const cls = localStorage.getItem('savedThemeClass'); if (cls!==null) document.documentElement.className = cls; showNotification && showNotification('已恢复主题','success'); } catch(e) {}
+		}
+		function showNotification(msg, type) {
+			// 检查通知是否启用
+			const notificationsEnabled = localStorage.getItem('notificationsEnabled') !== 'false';
+			if (!notificationsEnabled) {
+				return; // 如果通知被禁用，直接返回不显示通知
+			}
+			// type: 'info'|'warning'|'error'|'success'
+			const map = { error:'error', warning:'warning', info:'info', success:'info' };
+			const id = map[type] || 'info';
+			const el = document.getElementById(id) || document.querySelector('.' + id);
+			if (!el) return;
+			const content = el.querySelector('.' + id + '-content') || el;
+			if (content) content.textContent = msg;
+			el.classList.add('show');
+			setTimeout(()=>el.classList.remove('show'), 4000);
+		}
+		function hideError(){ const e=document.getElementById('error'); e && e.classList.remove('show'); }
+		function hideWarning(){ const e=document.getElementById('warning'); e && e.classList.remove('show'); }
+		function hideInfo(){ const e=document.getElementById('info'); e && e.classList.remove('show'); }
+	</script>
+
+	<script src="../scripts/base.js"></script>
+	<script src="../scripts/settings-global.js"></script>
+	<script src="../scripts/notification.js"></script>
+	<script src="../scripts/notification.js"></script>
+	<script src="../scripts/custom-select.js"></script>
+
+	<!-- 本页交互：添加/编辑/删除/搜索（内联实现，轻量） -->
+	<script>
+	(function(){
+		const table = document.getElementById('accountsTable').querySelector('tbody');
+		const modal = document.getElementById('accountModal');
+		const modalTitle = document.getElementById('modalTitle');
+		let editRow = null;
+
+		document.getElementById('addAccountBtn').addEventListener('click', ()=> {
+			editRow = null;
+			modalTitle.textContent = '添加账户';
+			document.getElementById('modalUsername').value = '';
+			document.getElementById('modalRole').value = 'user';
+			document.getElementById('modalStatus').value = 'online';
+			// 触发动画的正确方式
+			requestAnimationFrame(() => {
+				modal.classList.add('show');
+			});
+		});
+		document.getElementById('modalCancel').addEventListener('click', ()=> {
+			modal.classList.remove('show');
+		});
+
+		document.getElementById('modalSave').addEventListener('click', ()=> {
+			const name = document.getElementById('modalUsername').value.trim();
+			const role = document.getElementById('modalRole').value;
+			const status = document.getElementById('modalStatus').value;
+			if (!name) { showNotification && showNotification('用户名不能为空','warning'); return; }
+
+			if (editRow) {
+				editRow.querySelector('td:nth-child(1)').textContent = name;
+				editRow.querySelector('td:nth-child(2)').textContent = role;
+				const statusEl = editRow.querySelector('td:nth-child(3) .status');
+				statusEl.className = 'status ' + status;
+				statusEl.textContent = status === 'online' ? '在线' : status === 'offline' ? '离线' : '警告';
+				showNotification && showNotification('已更新账户','success');
+			} else {
+				const tr = document.createElement('tr');
+				const id = Date.now();
+				tr.setAttribute('data-id', id);
+				tr.innerHTML = `<td>${escapeHtml(name)}</td><td>${escapeHtml(role)}</td><td><span class="status ${status}">${status==='online'?'在线':status==='offline'?'离线':'警告'}</span></td><td><button class="edit-btn settings-btn">编辑</button> <button class="delete-btn">删除</button></td>`;
+				table.appendChild(tr);
+				showNotification && showNotification('添加成功','success');
+			}
+			modal.classList.remove('show');
+			updateBindings();
+		});
+
+		function updateBindings(){
+			table.querySelectorAll('.edit-btn').forEach(btn=>{
+				btn.onclick = (e)=>{
+					const tr = e.target.closest('tr');
+					editRow = tr;
+					modalTitle.textContent = '编辑账户';
+					document.getElementById('modalUsername').value = tr.children[0].textContent;
+					document.getElementById('modalRole').value = tr.children[1].textContent;
+					const st = tr.querySelector('.status').classList.contains('online') ? 'online' : tr.querySelector('.status').classList.contains('offline') ? 'offline' : 'warning';
+					document.getElementById('modalStatus').value = st;
+					// 触发动画的正确方式
+					requestAnimationFrame(() => {
+						modal.classList.add('show');
+					});
+				};
+			});
+			table.querySelectorAll('.delete-btn').forEach(btn=>{
+				btn.onclick = (e)=>{
+					const tr = e.target.closest('tr');
+					if (confirm('确定删除该账户？')) {
+						tr.remove();
+						showNotification && showNotification('已删除','info');
+					}
+				};
+			});
+		}
+		function escapeHtml(s){ return s.replace(/[&<>"']/g, c=>'&#'+c.charCodeAt(0)+';'); }
+		// 搜索
+		document.getElementById('accountSearch').addEventListener('input', function(){
+			const q = this.value.trim().toLowerCase();
+			table.querySelectorAll('tr').forEach(tr=>{
+				const txt = tr.children[0].textContent.toLowerCase();
+				tr.style.display = txt.includes(q) ? '' : 'none';
+			});
+		});
+		updateBindings();
+	})();
+	</script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>意见反馈 - Electronic</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .header-container {
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .back-button {
+            position: absolute;
+            left: 20px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        
+        .back-button:hover {
+            background-color: #3367d6;
+        }
+        
+        .page-title {
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header class="header-container">
+        <a href="index.html" class="back-button">返回</a>
+        <h1 class="page-title">意见反馈</h1>
+    </header>
+
+    <section class="content">
+        <h2>您的意见对我们很重要</h2>
+        <p>感谢您使用Electronic！我们始终致力于提升产品质量和用户体验。如果您有任何建议、意见或遇到问题，请随时告诉我们：</p>
+        
+        <h3>反馈渠道</h3>
+        <ul>
+            <li><strong>在线反馈表单：</strong>填写下方表单直接提交</li>
+            <li><strong>邮箱反馈：</strong>feedback@electronic.example.com</li>
+            <li><strong>客服热线：</strong>400-123-4567（工作日 9:00-18:00）</li>
+            <li><strong>社区论坛：</strong>在官方社区发表您的看法</li>
+        </ul>
+        
+        <h3>反馈表单</h3>
+        <form>
+            <div style="margin-bottom: 20px;">
+                <label for="name" style="display: block; margin-bottom: 5px; color: #666;">姓名：</label>
+                <input type="text" id="name" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="email" style="display: block; margin-bottom: 5px; color: #666;">邮箱：</label>
+                <input type="email" id="email" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="type" style="display: block; margin-bottom: 5px; color: #666;">反馈类型：</label>
+                <select id="type" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="suggestion">功能建议</option>
+                    <option value="bug">Bug报告</option>
+                    <option value="complaint">投诉</option>
+                    <option value="praise">表扬</option>
+                    <option value="other">其他</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="subject" style="display: block; margin-bottom: 5px; color: #666;">主题：</label>
+                <input type="text" id="subject" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="message" style="display: block; margin-bottom: 5px; color: #666;">详细内容：</label>
+                <textarea id="message" rows="6" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"></textarea>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <button type="submit" style="background-color: #4285f4; color: white; padding: 12px 30px; border: none; border-radius: 4px; cursor: pointer; font-size: 1.1em;">提交反馈</button>
+            </div>
+        </form>
+        
+        <h3>反馈处理流程</h3>
+        <ol>
+            <li><strong>接收反馈：</strong>我们会在1个工作日内确认收到您的反馈</li>
+            <li><strong>分类处理：</strong>根据反馈类型分配给相应团队处理</li>
+            <li><strong>跟进沟通：</strong>如有需要，我们会与您进一步沟通了解详情</li>
+            <li><strong>解决方案：</strong>针对问题提供解决方案或改进计划</li>
+            <li><strong>结果反馈：</strong>将处理结果通过邮件或电话告知您</li>
+        </ol>
+        
+        <h3>用户反馈奖励计划</h3>
+        <p>为了鼓励用户提供有价值的反馈，我们推出了反馈奖励计划：</p>
+        <ul>
+            <li>有价值的建议：可获得100-500积分奖励</li>
+            <li>Bug报告：根据严重程度获得200-1000积分奖励</li>
+            <li>优秀反馈：有机会获得定制纪念品</li>
+            <li>积分可用于兑换高级功能或服务</li>
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Electronic Project. All rights reserved.</p>
+    </footer>
+</body>
+</html>

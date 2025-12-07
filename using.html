@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NaOH体积变化对pH值的影响趋势</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        acid: '#EF4444',
+                        neutral: '#F59E0B',
+                        base: '#8B5CF6',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .trend-container {
+                position: relative;
+                height: 600px;
+                width: 100%;
+            }
+            .volume-marker {
+                transition: all 0.3s ease;
+                z-index: 10;
+            }
+            .volume-marker:hover {
+                transform: scale(1.1);
+            }
+            .gradient-bg {
+                background: linear-gradient(180deg, rgba(239,68,68,0.05) 0%, rgba(245,158,11,0.05) 50%, rgba(139,92,246,0.05) 100%);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <header class="mb-8 text-center">
+            <h1 class="text-[clamp(1.5rem,3vw,2.2rem)] font-bold text-gray-800 mb-2">
+                NaOH体积变化对pH值的影响趋势
+            </h1>
+            <p class="text-gray-600">0.10mol/L NaOH滴定20.00mL 0.10mol/L HCl的pH变化趋势</p>
+        </header>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 gradient-bg">
+            <div class="trend-container">
+                <canvas id="trendChart"></canvas>
+                
+                <!-- 动态跟踪指示器 -->
+                <div id="volumeTracker" class="hidden absolute bg-white border border-gray-200 rounded-lg shadow-lg p-3">
+                    <div class="text-sm font-medium mb-1">NaOH体积: <span id="trackedVolume" class="text-primary">0.00 mL</span></div>
+                    <div class="text-sm font-medium">pH值: <span id="trackedPh" class="text-acid">1.00</span></div>
+                    <div class="w-full h-1 bg-gray-200 mt-2 rounded-full overflow-hidden">
+                        <div id="phProgress" class="h-full bg-acid" style="width: 7%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-5 rounded-lg shadow border-l-4 border-acid">
+                <h3 class="font-semibold text-lg mb-2 flex items-center">
+                    <i class="fa fa-arrow-right mr-2"></i>酸性阶段
+                </h3>
+                <p class="text-sm text-gray-600">
+                    当NaOH体积在0-19.9mL范围时，pH值缓慢上升（1.00→4.30），每增加1mL NaOH，pH平均仅上升0.17个单位。
+                </p>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow border-l-4 border-neutral">
+                <h3 class="font-semibold text-lg mb-2 flex items-center">
+                    <i class="fa fa-bolt mr-2"></i>突跃阶段
+                </h3>
+                <p class="text-sm text-gray-600">
+                    当NaOH体积在19.9-20.1mL范围时，pH值急剧上升（4.30→9.70），仅0.2mL的体积变化就带来5.4个pH单位的跃升。
+                </p>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow border-l-4 border-base">
+                <h3 class="font-semibold text-lg mb-2 flex items-center">
+                    <i class="fa fa-arrow-up mr-2"></i>碱性阶段
+                </h3>
+                <p class="text-sm text-gray-600">
+                    当NaOH体积超过20.1mL后，pH值缓慢上升（9.70→12.52），每增加1mL NaOH，pH平均仅上升0.08个单位。
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow p-6">
+            <h2 class="text-xl font-semibold mb-4 text-primary">体积变化与pH趋势关系分析</h2>
+            <div class="space-y-4 text-gray-700">
+                <p>从趋势图可以清晰观察到，NaOH体积变化对pH值的影响呈现明显的三阶段性：</p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li>在化学计量点（20.00mL）前，由于H⁺过量，即使加入较多NaOH，溶液仍保持酸性，pH变化平缓；</li>
+                    <li>接近计量点时，溶液中H⁺浓度极低，少量NaOH即可使H⁺浓度发生巨大变化，表现为pH值的突跃；</li>
+                    <li>计量点后，由于OH⁻过量，溶液呈碱性，继续加入NaOH对pH值的影响再次变得平缓。</li>
+                </ul>
+                <p>这种趋势特征是强碱滴定强酸的典型表现，pH突跃范围（4.3~9.7）为选择指示剂提供了重要依据。</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 生成更精细的体积变化与pH值对应数据
+        function generateVolumeTrendData() {
+            const data = [];
+            const hclInitial = 0.10;    // HCl初始浓度(mol/L)
+            const hclVolume = 20.00;    // HCl初始体积(mL)
+            const naohConcentration = 0.10;  // NaOH浓度(mol/L)
+            
+            // 生成数据点：根据体积变化密度动态调整采样间隔
+            // 远离计量点区域：较疏采样
+            for (let v = 0; v < 19.5; v += 0.5) {
+                const hclRemaining = hclInitial * (hclVolume - v) / (hclVolume + v);
+                const ph = -Math.log10(hclRemaining);
+                data.push({ volume: v, ph: ph });
+            }
+            
+            // 接近计量点区域：加密采样（突出变化趋势）
+            for (let v = 19.5; v < 19.95; v += 0.05) {
+                const hclRemaining = hclInitial * (hclVolume - v) / (hclVolume + v);
+                const ph = -Math.log10(hclRemaining);
+                data.push({ volume: v, ph: ph });
+            }
+            
+            // 计量点附近：超高密度采样（精确展示突跃趋势）
+            for (let v = 19.95; v <= 20.05; v += 0.001) {
+                let ph;
+                if (v < 20) {
+                    const hclRemaining = hclInitial * (hclVolume - v) / (hclVolume + v);
+                    ph = -Math.log10(hclRemaining);
+                } else if (v > 20) {
+                    const naohExcess = naohConcentration * (v - hclVolume) / (hclVolume + v);
+                    ph = 14 + Math.log10(naohExcess);
+                } else {
+                    ph = 7.0;  // 计量点
+                }
+                data.push({ volume: v, ph: ph });
+            }
+            
+            // 计量点后区域：加密采样
+            for (let v = 20.05; v < 20.5; v += 0.05) {
+                const naohExcess = naohConcentration * (v - hclVolume) / (hclVolume + v);
+                const ph = 14 + Math.log10(naohExcess);
+                data.push({ volume: v, ph: ph });
+            }
+            
+            // 远离计量点区域：较疏采样
+            for (let v = 20.5; v <= 40; v += 0.5) {
+                const naohExcess = naohConcentration * (v - hclVolume) / (hclVolume + v);
+                const ph = 14 + Math.log10(naohExcess);
+                data.push({ volume: v, ph: ph });
+            }
+            
+            return data;
+        }
+
+        // 关键体积点（用于标记趋势转折点）
+        const keyVolumePoints = [
+            { volume: 0, ph: 1.00, label: '初始点' },
+            { volume: 10, ph: 1.48, label: '半滴定' },
+            { volume: 19.8, ph: 3.30, label: '突跃前' },
+            { volume: 19.98, ph: 4.30, label: '突跃开始' },
+            { volume: 20.00, ph: 7.00, label: '计量点', color: '#F59E0B' },
+            { volume: 20.02, ph: 9.70, label: '突跃结束' },
+            { volume: 40.00, ph: 12.52, label: '终点' }
+        ];
+
+        // 绘制体积变化趋势图
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            const trendData = generateVolumeTrendData();
+            
+            // 创建体积变化趋势线
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        {
+                            label: 'pH变化趋势',
+                            data: trendData,
+                            borderColor: '#3B82F6',
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            tension: 0.2,
+                            fill: false,
+                            spanGaps: false
+                        },
+                        {
+                            label: '关键体积点',
+                            data: keyVolumePoints,
+                            backgroundColor: keyVolumePoints.map(p => p.color || '#3B82F6'),
+                            borderColor: '#FFFFFF',
+                            borderWidth: 2,
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            showLine: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    animation: {
+                        duration: 2500,
+                        easing: 'easeOutQuart',
+                        // 模拟滴定过程的动画效果
+                        onProgress: function(animation) {
+                            const progress = animation.currentStep / animation.numSteps;
+                            const dataset = this.data.datasets[0];
+                            dataset.pointRadius = progress < 1 ? 0 : 0;
+                        }
+                    },
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                        onHover: function(e, elements) {
+                            if (elements.length > 0) {
+                                const point = elements[0].raw;
+                                const tracker = document.getElementById('volumeTracker');
+                                const volumeDisplay = document.getElementById('trackedVolume');
+                                const phDisplay = document.getElementById('trackedPh');
+                                const phProgress = document.getElementById('phProgress');
+                                
+                                // 更新跟踪数据
+                                volumeDisplay.textContent = `${point.volume.toFixed(2)} mL`;
+                                phDisplay.textContent = point.ph.toFixed(2);
+                                phDisplay.style.color = getPhColor(point.ph);
+                                phProgress.style.width = `${(point.ph / 14) * 100}%`;
+                                phProgress.style.backgroundColor = getPhColor(point.ph);
+                                
+                                // 定位跟踪器
+                                const rect = e.chart.canvas.getBoundingClientRect();
+                                const x = e.clientX - rect.left + 10;
+                                const y = e.clientY - rect.top - 80;
+                                
+                                tracker.style.left = `${x}px`;
+                                tracker.style.top = `${y}px`;
+                                tracker.classList.remove('hidden');
+                            } else {
+                                document.getElementById('volumeTracker').classList.add('hidden');
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: function() {
+                                    return '滴定状态';
+                                },
+                                label: function(context) {
+                                    const point = context.raw;
+                                    return [
+                                        `NaOH体积: ${point.volume.toFixed(2)} mL`,
+                                        `pH值: ${point.ph.toFixed(2)}`
+                                    ];
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        annotation: {
+                            annotations: {
+                                // 计量点垂直线（体积轴）
+                                equivalenceLine: {
+                                    type: 'line',
+                                    xMin: 20,
+                                    xMax: 20,
+                                    borderColor: '#F59E0B',
+                                    borderWidth: 2,
+                                    borderDash: [6, 4],
+                                    label: {
+                                        content: '计量点 (20.00mL)',
+                                        enabled: true,
+                                        position: 'start'
+                                    }
+                                },
+                                // 中性水平线（pH轴）
+                                neutralLine: {
+                                    type: 'line',
+                                    yMin: 7,
+                                    yMax: 7,
+                                    borderColor: '#9CA3AF',
+                                    borderWidth: 2,
+                                    borderDash: [6, 4]
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'NaOH加入体积 (mL)',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                padding: { top: 15 }
+                            },
+                            min: 0,
+                            max: 40,
+                            ticks: {
+                                stepSize: 5,
+                                callback: function(value) {
+                                    return value + ' mL';
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '溶液pH值',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                },
+                                padding: { right: 15 }
+                            },
+                            min: 0,
+                            max: 14,
+                            ticks: {
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 添加关键体积点标签
+            keyVolumePoints.forEach(point => {
+                if (point.label) {
+                    const x = chart.scales.x.getPixelForValue(point.volume);
+                    const y = chart.scales.y.getPixelForValue(point.ph);
+                    
+                    const label = document.createElement('div');
+                    label.className = 'absolute bg-white px-2 py-1 rounded shadow text-sm font-medium text-gray-800 volume-marker';
+                    label.textContent = `${point.label}: ${point.volume.toFixed(2)}mL`;
+                    label.style.left = `${x + 10}px`;
+                    label.style.top = `${y - 20}px`;
+                    label.style.pointerEvents = 'none';
+                    
+                    document.querySelector('.trend-container').appendChild(label);
+                }
+            });
+
+            // 根据pH值获取对应颜色
+            function getPhColor(ph) {
+                if (ph < 7) {
+                    // 酸性：从红色到黄色过渡
+                    const ratio = ph / 7;
+                    const r = 239;
+                    const g = Math.round(68 + (190 * ratio));
+                    const b = 68;
+                    return `rgb(${r}, ${g}, ${b})`;
+                } else {
+                    // 碱性：从黄色到紫色过渡
+                    const ratio = (ph - 7) / 7;
+                    const r = Math.round(245 - (106 * ratio));
+                    const g = Math.round(158 - (66 * ratio));
+                    const b = Math.round(11 + (235 * ratio));
+                    return `rgb(${r}, ${g}, ${b})`;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

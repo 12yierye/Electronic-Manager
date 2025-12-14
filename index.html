@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Electronic</title>
     <style>
         * {
@@ -28,6 +29,7 @@
             font-size: 2.5em;
         }
         .subtitle {
+            -webkit-user-select: none;
             user-select: none;
             color: #666;
             font-size: 1.3em;
@@ -151,11 +153,16 @@
                 font-size: 1.1em;
             }
         }
+        .copyright {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1 style="user-select: none;">Welcome to Electronic!</h1>
+        <h1>Welcome to Electronic!</h1>
         <p class="subtitle">Your Personal AI Assistant</p>
     </header>
 
@@ -209,9 +216,9 @@
         <a href="credits.html">鸣谢</a>
         <a href="privacy.html">隐私政策</a>
         <a href="terms.html">服务条款</a>
-        <a href="./manager/pages/main.html">Manager Platform</a>
+        <a href="./manager/pages/login.html">Manager Platform</a>
         <a href="using.html">Chemical (using)</a>
-        <p style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">&copy; 2025 Electronic Project. All rights reserved.</p>
+        <p class="copyright">&copy; 2025 Electronic Project. All rights reserved.</p>
     </section>
 </body>
 </html>

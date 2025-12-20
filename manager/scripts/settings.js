@@ -50,21 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 添加导航栏展开/折叠功能
-    const toggleNavButton = document.getElementById('toggleNav');
-    const nav = document.getElementById('nav');
-
-    if (toggleNavButton && nav) {
-        toggleNavButton.addEventListener('click', function() {
-            nav.classList.toggle('collapsed');
-            if (nav.classList.contains('collapsed')) {
-                toggleNavButton.textContent = '展开';
-            } else {
-                toggleNavButton.textContent = '折叠';
-            }
-        });
-    }
-
 });
 
 // 初始化标签下划线

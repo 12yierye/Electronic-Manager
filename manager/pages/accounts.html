@@ -83,5 +83,13 @@
 	<script src="../scripts/notification.js"></script>
 	<script src="../scripts/custom-select.js"></script>
 	<script src="../scripts/accounts.js"></script>
+    <script>
+        // 确保导航功能正常工作
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof setupNavigation === 'function') {
+                setupNavigation();
+            }
+        });
+    </script>
 </body>
 </html>

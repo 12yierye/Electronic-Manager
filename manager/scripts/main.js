@@ -1,85 +1,3 @@
-// 服务器状态信息
-
-const cpuUsage = document.getElementById('cpuUsage');
-const processCount = document.getElementById('processCount');
-
-const memoryUsage = document.getElementById('memoryUsage');
-const diskUsage = document.getElementById('diskUsage');
-
-const networkTraffic = document.getElementById('networkTraffic');
-const uptime = document.getElementById('uptime');
-
-var realCpuUsage = cpuUsage.textContent;
-var realProcessCount = processCount.textContent;
-var realMemoryUsage = memoryUsage.textContent;
-var realDiskUsage = diskUsage.textContent;
-var realNetworkTraffic = networkTraffic.textContent;
-var realUptime = uptime.textContent;
-
-const SERVER_CONFIG = {
-    protocol: 'http',
-    ip: '', // Unknown now, keep empty temporarily
-    port: 7062
-};
-const ifGetServerStatus = false;
-function getServerStatus(path) {
-    fetch(`${SERVER_CONFIG.protocol}://${SERVER_CONFIG.ip}:${SERVER_CONFIG.ip}${path}`)
-        .then(response => response.json())
-        .then(data => {
-            cpuUsage.textContent = data.cpuUsage + '%';
-            processCount.textContent = data.processCount;
-            memoryUsage.textContent = data.usedMemory + '/' + data.totalMemory + ' GiB';
-            diskUsage.textContent = data.usedDisk + '/' + data.totalDisk + ' GiB';
-            networkTraffic.textContent = data.upload + '/' + data.download + ' Mbps';
-            uptime.textContent = data.uptimeDays + ' 天 ' + data.uptimeHours + ' 小时';
-        })
-        .catch(error => {
-            console.error('Error fetching server status:', error);
-            cpuUsage.textContent = realCpuUsage;
-            processCount.textContent = realProcessCount;
-            memoryUsage.textContent = realMemoryUsage;
-            diskUsage.textContent = realDiskUsage;
-            networkTraffic.textContent = realNetworkTraffic;
-            uptime.textContent = realUptime;
-        });
-}
-if (ifGetServerStatus == true) {
-    getServerStatus('/api/status');
-    setInterval(() => {
-        getServerStatus('/api/status');
-    }, 5000);
-} else {
-    cpuUsage.textContent = realCpuUsage;
-    processCount.textContent = realProcessCount;
-    memoryUsage.textContent = realMemoryUsage;
-    diskUsage.textContent = realDiskUsage;
-    networkTraffic.textContent = realNetworkTraffic;
-    uptime.textContent = realUptime;
-}
-
-var realCpuUsageNum = 42
-var realProcessCount = 87
-
-var usedMemory = 0.4
-var totalMemory = 1
-
-var usedDisk = 11.4
-var totalDisk = 40
-
-var upload = 0.2
-var download = 3.6
-
-var uptimeDays = 22
-var uptimeHours = 4
-
-
-cpuUsage.textContent = realCpuUsageNum + '%';
-processCount.textContent = realProcessCount;
-memoryUsage.textContent = usedMemory + '/' +  totalMemory + ' GiB';
-diskUsage.textContent = usedDisk + '/' + totalDisk + ' GiB';
-networkTraffic.textContent = upload + '/' + download + ' Mbps';
-uptime.textContent = uptimeDays + ' 天 ' + uptimeHours + ' 小时';
-
 // Top Time
 const time = document.getElementById('currentTime')
 
@@ -563,3 +481,83 @@ if (typeof window.hideInfo !== 'function') {
 	window.applyNotificationSettings = applyNotificationSettings;
 	applyNotificationSettings();
 })();
+
+// 服务器状态信息
+
+const cpuUsage = document.getElementById('cpuUsage');
+const processCount = document.getElementById('processCount');
+
+const memoryUsage = document.getElementById('memoryUsage');
+const diskUsage = document.getElementById('diskUsage');
+
+const networkTraffic = document.getElementById('networkTraffic');
+const uptime = document.getElementById('uptime');
+
+var realCpuUsage = cpuUsage.textContent;
+var realProcessCount = processCount.textContent;
+var realMemoryUsage = memoryUsage.textContent;
+var realDiskUsage = diskUsage.textContent;
+var realNetworkTraffic = networkTraffic.textContent;
+var realUptime = uptime.textContent;
+
+const SERVER_CONFIG = {
+    protocol: 'http',
+    ip: '', // Unknown now, keep empty temporarily
+    port: 7062
+};
+const ifGetServerStatus = false;
+function getServerStatus(path) {
+    fetch(`${SERVER_CONFIG.protocol}://${SERVER_CONFIG.ip}:${SERVER_CONFIG.ip}${path}`)
+        .then(response => response.json())
+        .then(data => {
+            cpuUsage.textContent = data.cpuUsage + '%';
+            processCount.textContent = data.processCount;
+            memoryUsage.textContent = data.usedMemory + '/' + data.totalMemory + ' GiB';
+            diskUsage.textContent = data.usedDisk + '/' + data.totalDisk + ' GiB';
+            networkTraffic.textContent = data.upload + '/' + data.download + ' Mbps';
+            uptime.textContent = data.uptimeDays + ' 天 ' + data.uptimeHours + ' 小时';
+        })
+        .catch(error => {
+            console.error('Error fetching server status:', error);
+            cpuUsage.textContent = realCpuUsage;
+            processCount.textContent = realProcessCount;
+            memoryUsage.textContent = realMemoryUsage;
+            diskUsage.textContent = realDiskUsage;
+            networkTraffic.textContent = realNetworkTraffic;
+            uptime.textContent = realUptime;
+        });
+}
+
+// 初始化服务器状态显示
+document.addEventListener('DOMContentLoaded', function() {
+    if (ifGetServerStatus == true) {
+        getServerStatus('/api/status');
+        setInterval(() => {
+            getServerStatus('/api/status');
+        }, 5000);
+    } else {
+        // 使用预设的默认值而不是"Loading..."
+        var realCpuUsageNum = 42;
+        var realProcessCountNum = 87;
+        
+        var usedMemoryVal = 0.4;
+        var totalMemoryVal = 1;
+        
+        var usedDiskVal = 11.4;
+        var totalDiskVal = 40;
+        
+        var uploadVal = 0.2;
+        var downloadVal = 3.6;
+        
+        var uptimeDaysVal = 22;
+        var uptimeHoursVal = 4;
+        
+        
+        cpuUsage.textContent = realCpuUsageNum + '%';
+        processCount.textContent = realProcessCountNum;
+        memoryUsage.textContent = usedMemoryVal + '/' +  totalMemoryVal + ' GiB';
+        diskUsage.textContent = usedDiskVal + '/' + totalDiskVal + ' GiB';
+        networkTraffic.textContent = uploadVal + '/' + downloadVal + ' Mbps';
+        uptime.textContent = uptimeDaysVal + ' 天 ' + uptimeHoursVal + ' 小时';
+    }
+});

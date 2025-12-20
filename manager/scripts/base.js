@@ -231,11 +231,13 @@ function setupNavigation() {
     const toggleBtn = document.getElementById('toggleNav');
     const navButtons = document.querySelectorAll('.nav-btn');
     
+    if (!nav || !toggleBtn) return; // 确保元素存在
+    
     function updateNavState(expanded) {
         nav.classList.toggle('expanded', expanded);
         document.body.classList.toggle('nav-expanded', expanded);
         toggleBtn.textContent = expanded ? '折叠' : '展开';
-        localStorage.setItem('navExpanded', expanded);
+        localStorage.setItem('navExpanded', expanded.toString()); // 确保存储的是字符串
     }
     
     // 检查本地存储的导航栏状态
@@ -243,7 +245,8 @@ function setupNavigation() {
     updateNavState(savedState);
     
     // 切换导航栏展开/折叠状态
-    toggleBtn.addEventListener('click', function() {
+    toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation(); // 防止事件冒泡
         const isExpanded = nav.classList.contains('expanded');
         updateNavState(!isExpanded);
     });
@@ -319,19 +322,18 @@ function createNotification(type, title, message, duration = 3000) {
     // 确保通知容器已初始化
     initNotificationContainer();
     
-    const id = ++notificationCounter;
+    // 生成唯一ID
+    const id = 'notification_' + (++notificationCounter);
     
     // 创建通知元素
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.innerHTML = `
         <div class="notification-header">
-            <h4 class="notification-title">${title}</h4>
-            <button class="notification-close" onclick="closeNotification(${id})">&times;</button>
+            <span class="notification-title">${title}</span>
+            <button class="notification-close" onclick="closeNotification('${id}')">&times;</button>
         </div>
-        <div class="notification-body">
-            <p>${message}</p>
-        </div>
+        <div class="notification-body">${message}</div>
     `;
     
     // 确保容器存在
@@ -380,46 +382,6 @@ function createNotification(type, title, message, duration = 3000) {
     return id;
 }
 
-// 关闭通知函数
-function closeNotification(id) {
-    const notificationObj = notifications.get(id);
-    if (notificationObj) {
-        const { element, timeoutId } = notificationObj;
-        
-        // 清除定时器
-        clearTimeout(timeoutId);
-        
-        // 添加关闭动画
-        element.classList.remove('show');
-        
-        // 动画结束后移除元素
-        setTimeout(() => {
-            if (element.parentNode) {
-                element.parentNode.removeChild(element);
-                
-                // 重新排列剩余的通知
-                rearrangeNotifications();
-            }
-            notifications.delete(id);
-        }, 300);
-    }
-}
-
-// 重新排列通知函数
-function rearrangeNotifications() {
-    if (!notificationContainer) return;
-    
-    const notificationElements = notificationContainer.querySelectorAll('.notification');
-    // 由于通知是绝对定位的，我们不需要手动重新排列
-    // 容器的默认行为会自动处理新通知的位置
-}
-
-// 清空所有通知
-function clearAllNotifications() {
-    notifications.forEach((notificationObj, id) => {
-        closeNotification(id);
-    });
-}
 
 // 不同类型的通知函数
 function showInfoNotification(title, message, duration = 3000) {
@@ -497,6 +459,47 @@ if (document.readyState === 'loading') {
 } else {
     // DOM已经加载完成
     initNotificationContainer();
+}
+
+// 关闭通知函数
+function closeNotification(id) {
+    const notificationObj = notifications.get(id);
+    if (notificationObj) {
+        const { element, timeoutId } = notificationObj;
+        
+        // 清除定时器
+        clearTimeout(timeoutId);
+        
+        // 添加关闭动画
+        element.classList.remove('show');
+        
+        // 动画结束后移除元素
+        setTimeout(() => {
+            if (element.parentNode) {
+                element.parentNode.removeChild(element);
+                
+                // 重新排列剩余的通知
+                rearrangeNotifications();
+            }
+            notifications.delete(id);
+        }, 300);
+    }
+}
+
+// 重新排列通知函数
+function rearrangeNotifications() {
+    if (!notificationContainer) return;
+    
+    const notificationElements = notificationContainer.querySelectorAll('.notification');
+    // 由于通知是绝对定位的，我们不需要手动重新排列
+    // 容器的默认行为会自动处理新通知的位置
+}
+
+// 清空所有通知
+function clearAllNotifications() {
+    notifications.forEach((notificationObj, id) => {
+        closeNotification(id);
+    });
 }
 
 // 为所有select元素添加change事件监听器，选择后自动失去焦点
@@ -637,179 +640,3 @@ function applyNotificationSettings() {
         console.warn('Failed to apply notification settings.');
     }
 }
-
-// 通知音效相关功能
-(function(){
-    const fileNames = {
-        low: 'low_priority.wav',
-        medium: 'medium_priority.wav',
-        high: 'high_priority.wav'
-    };
-
-    let enabled = true;
-    let volume = 0.8;
-    let soundStyle = localStorage.getItem('notificationSoundStyle') || 'default';
-
-    function applyNotificationSettings() {
-        try {
-            const en = localStorage.getItem('notificationsEnabled');
-            enabled = (en === null) ? true : (en === 'true');
-            const v = localStorage.getItem('notificationVolume');
-            volume = (v === null) ? 0.8 : Math.min(1, Math.max(0, parseFloat(v)));
-            soundStyle = localStorage.getItem('notificationSoundStyle') || soundStyle;
-        } catch {
-            enabled = true; volume = 0.8; soundStyle = soundStyle || 'default';
-        }
-        ['low','medium','high'].forEach(level => {
-            // 正确的相对路径应该是 ../res/sounds/...
-            const path = `../res/sounds/${soundStyle}/${fileNames[level]}`;
-            try {
-                const a = new Audio(path);
-                a.preload = 'auto';
-                a.volume = volume;
-            } catch (e) {
-                console.warn('Failed to preload sound:', path, e);
-            }
-        });
-    }
-
-    function playSoundForLevel(level) {
-        // 检查通知是否启用
-        const notificationsEnabled = localStorage.getItem('notificationsEnabled') !== 'false';
-        if (!notificationsEnabled) return;
-        
-        // 检查音效是否启用
-        if (!enabled) return;
-        
-        let priority = 'low';
-        if (level === 'info') priority = 'low';
-        else if (level === 'success' || level === 'warning') priority = 'medium';
-        else if (level === 'error') priority = 'high';
-
-        // 使用全局设置的音效风格
-        let currentStyle = localStorage.getItem('notificationSoundStyle') || 'default';
-
-        // 正确的相对路径应该是 ../res/sounds/...
-        const src = `../res/sounds/${currentStyle}/${fileNames[priority]}`;
-            
-        try {
-            const a = new Audio(src);
-            a.volume = volume;
-            a.play().catch(()=>{/* ignore autoplay policy errors */});
-        } catch (e) {
-            // 忽略文件不存在的错误
-            if (e.name !== 'NotFoundError') {
-                console.warn('Failed to play notification sound:', src, e);
-            }
-        }
-    }
-
-    // 对外接口：设置/获取通知开关、音量、风格
-    window.setNotificationsEnabled = function(on) {
-        enabled = !!on;
-        try { localStorage.setItem('notificationsEnabled', enabled ? 'true' : 'false'); } catch{}
-    };
-    window.setNotificationVolume = function(v) {
-        volume = Math.min(1, Math.max(0, Number(v)));
-        try { localStorage.setItem('notificationVolume', String(volume)); } catch{}
-    };
-    window.setSoundStyle = function(style) {
-        if (!style) return;
-        soundStyle = style;
-        try { localStorage.setItem('notificationSoundStyle', style); } catch{}
-        // 预加载新风格的样本
-        ['low','medium','high'].forEach(level => {
-            const p = `../res/sounds/${soundStyle}/${fileNames[level]}`;
-            try {
-                const a = new Audio(p); 
-                a.preload = 'auto'; 
-                a.volume = volume;
-            } catch (e) {
-                console.warn('Failed to preload sound:', p, e);
-            }
-        });
-    };
-    window.getSoundStyle = function() { return soundStyle; };
-
-    // 确保playSoundForLevel函数在全局作用域可用
-    window.playSoundForLevel = playSoundForLevel;
-
-    // 保留可能存在的原 showNotification（先保存引用）
-    const prevShow = (typeof window.showNotification === 'function') ? window.showNotification : null;
-
-    // 覆盖全局 showNotification：调用原显示逻辑（若存在），再播放音效
-    window.showNotification = function(message, type = 'info', timeout = 4000) {
-        // 检查通知是否启用
-        const notificationsEnabled = localStorage.getItem('notificationsEnabled') !== 'false';
-        if (!notificationsEnabled) {
-            return; // 如果通知被禁用，直接返回不显示通知
-        }
-        
-        try {
-            if (prevShow) prevShow(message, type, timeout);
-            else {
-                const map = { error:'error', warning:'warning', info:'info', success:'info' };
-                const id = map[type] || 'info';
-                const el = document.getElementById(id) || document.querySelector('.' + id);
-                if (el) {
-                    const content = el.querySelector('.' + id + '-content') || el;
-                    if (content) content.textContent = message;
-                    el.classList.add('show');
-                    setTimeout(()=>el.classList.remove('show'), timeout);
-                }
-            }
-        } catch{
-            console.warn('Failed to show notification.');
-        }
-        
-        // 播放声音
-        try { 
-            playSoundForLevel(type); 
-        } catch{
-            console.warn('Failed to play notification sound.');
-        }
-    };
-
-    window.applyNotificationSettings = applyNotificationSettings;
-    applyNotificationSettings();
-})();
-
-// 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', function() {
-    // 初始化下划线
-    initUnderline();
-    
-    // 应用动画设置
-    applyAnimationSettings();
-
-    // 应用通知设置
-    applyNotificationSettings();
-    
-    // 处理页面淡入效果
-    if (document.body.classList.contains('page-fade-in')) {
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                document.body.classList.remove('page-fade-in');
-            });
-        });
-    }
-    
-    // 为标签按钮添加点击事件监听器
-    document.querySelectorAll('.labelsButton').forEach(button => {
-        button.addEventListener('click', function() {
-            document.querySelectorAll('.labelsButton').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            this.classList.add('active');
-            
-            updateUnderlinePosition(this);
-            
-            const category = this.getAttribute('data-category');
-            switchPanel(category);
-        });
-    });
-    
-    // 设置导航栏
-    setupNavigation();
-});

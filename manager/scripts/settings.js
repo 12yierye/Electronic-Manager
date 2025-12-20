@@ -38,9 +38,33 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 设置导航栏
     setupNavigation();
-    
+
     // 初始化设置控件
     initializeSettingsControls();
+
+    // 添加Logo点击事件
+    const logo = document.getElementById('logo');
+    if (logo) {
+        logo.addEventListener('click', function() {
+            window.toNewWindow('http://120.24.26.164');
+        });
+    }
+
+    // 添加导航栏展开/折叠功能
+    const toggleNavButton = document.getElementById('toggleNav');
+    const nav = document.getElementById('nav');
+
+    if (toggleNavButton && nav) {
+        toggleNavButton.addEventListener('click', function() {
+            nav.classList.toggle('collapsed');
+            if (nav.classList.contains('collapsed')) {
+                toggleNavButton.textContent = '展开';
+            } else {
+                toggleNavButton.textContent = '折叠';
+            }
+        });
+    }
+
 });
 
 // 初始化标签下划线
@@ -465,14 +489,6 @@ function initializeSettingsControls() {
             saveButton.disabled = true;
         }, 100);
     });
-    
-    // Logo点击事件
-    const logo = document.getElementById('logo');
-    if (logo) {
-        logo.addEventListener('click', function() {
-            window.toNewWindow('http://120.24.26.164');
-        });
-    }
 }
 
 function applyFont(v){

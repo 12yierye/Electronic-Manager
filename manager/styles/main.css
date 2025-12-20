@@ -173,13 +173,13 @@
 
 .status.error {
     background-color: rgba(220, 53, 69, 0.2);
-    color: #bd2130;
+    color: #ff5a6a;
     font-weight: bold;
 }
 
 .status.warning {
     background-color: rgba(255, 193, 7, 0.2);
-    color: #e0a800;
+    color: #d6c07e;
     font-weight: bold;
 }
 

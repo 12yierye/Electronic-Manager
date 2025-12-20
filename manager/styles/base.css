@@ -122,6 +122,10 @@ body.page-fade-in {
     margin-left: calc(var(--font-size, 16px) * 0.625);
 }
 
+.nav.expanded .nav-btn .icon {
+    margin-right: calc(var(--font-size, 16px) * 0.3125);
+}
+
 .nav.expanded .toggle-nav {
     width: calc(var(--font-size, 16px) * 12.5 * 0.9);
     transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -188,6 +192,10 @@ body.page-fade-in {
     font-size: calc(var(--font-size, 16px) * 0.875);
     position: relative;
     z-index: 1;
+}
+
+.nav-btn .icon {
+    display: inline-block;
 }
 
 .nav-btn::after {

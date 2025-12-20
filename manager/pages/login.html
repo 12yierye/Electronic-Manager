@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - Electronic Manager</title>
+    <link rel="stylesheet" href="../styles/base.css">
+    <style>
+        body {
+            padding-left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--nav-bg) 0%, var(--bg-color) 100%);
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo h1 {
+            margin: 0;
+            color: var(--active-color);
+            font-size: 2rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--panel-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--active-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        .form-control:hover {
+            border-color: var(--active-color);
+        }
+
+        .login-btn {
+            padding: 0.8rem 1rem;
+            background-color: var(--active-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .form-footer a {
+            color: var(--active-color);
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+            display: none;
+        }
+
+        /* 美化超链接样式 */
+        a {
+            color: var(--active-color);
+            text-decoration: none; /* 去除默认下划线 */
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        a:hover {
+            color: #0056b3;
+        }
+
+        a::after {
+            content: '';
+            position: absolute;
+            width: 100%; /* 默认显示完整线条 */
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--active-color);
+            transition: opacity 0.3s ease; /* 改为透明度过渡 */
+            opacity: 0; /* 默认隐藏 */
+        }
+
+        a:hover::after {
+            opacity: 1; /* 悬停时显示 */
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <div class="login-container">
+        <div class="login-logo">
+            <h1>Electronic Manager</h1>
+        </div>
+        
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username-for-electronic-manager" class="form-control" placeholder="请输入用户名" required>
+                <div class="error-message" id="usernameError">请输入有效的用户名</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password-for-electronic-manager" class="form-control" placeholder="请输入密码" required>
+                <div class="error-message" id="passwordError">密码不能为空</div>
+            </div>
+            
+            <button type="submit" class="login-btn">登录</button>
+        </form>
+        
+        <div class="form-footer">
+            <p>还没有账户？<a href="./register.html" id="registerLink">立即注册</a></p>
+            <p><a href="./forget.html" id="forgotPasswordLink">忘记密码？</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const usernameError = document.getElementById('usernameError');
+            const passwordError = document.getElementById('passwordError');
+
+            // 表单验证和提交
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                
+                // 验证用户名
+                if (!usernameInput.value.trim()) {
+                    showError(usernameInput, usernameError);
+                    isValid = false;
+                } else {
+                    hideError(usernameInput, usernameError);
+                }
+                
+                // 验证密码
+                if (!passwordInput.value.trim()) {
+                    showError(passwordInput, passwordError);
+                    isValid = false;
+                } else {
+                    hideError(passwordInput, passwordError);
+                }
+                
+                // 如果验证通过，执行登录逻辑
+                if (isValid) {
+                    // 这里应该发送登录请求到服务器
+                    console.log('登录信息:', {
+                        username: usernameInput.value,
+                        password: passwordInput.value
+                    });
+                    
+                    // 禁用登录按钮防止重复提交
+                    const loginBtn = document.querySelector('.login-btn');
+                    loginBtn.disabled = true;
+                    loginBtn.textContent = '登录中...';
+
+                    // 模拟向服务器发送登录信息，延迟0.7-0.8秒
+                    setTimeout(() => {
+                        // 跳转到主页面
+                        window.location.href = './main.html';
+                    }, 750);
+                }
+            });
+            
+            // 输入框事件监听
+            usernameInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    hideError(this, usernameError);
+                }
+            });
+            
+            passwordInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    hideError(this, passwordError);
+                }
+            });
+            
+            // 显示错误信息
+            function showError(input, errorElement) {
+                input.style.borderColor = '#f44336';
+                errorElement.style.display = 'block';
+            }
+            
+            // 隐藏错误信息
+            function hideError(input, errorElement) {
+                input.style.borderColor = '';
+                errorElement.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

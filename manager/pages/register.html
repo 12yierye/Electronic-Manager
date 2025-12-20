@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - Electronic Manager</title>
+    <link rel="stylesheet" href="../styles/base.css">
+    <style>
+        body {
+            padding-left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--nav-bg) 0%, var(--bg-color) 100%);
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+        }
+
+        .register-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .register-logo h1 {
+            margin: 0;
+            color: var(--active-color);
+            font-size: 2rem;
+        }
+
+        .register-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--panel-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--active-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        .form-control:hover {
+            border-color: var(--active-color);
+        }
+
+        .register-btn {
+            padding: 0.8rem 1rem;
+            background-color: var(--active-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .register-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .register-btn:active {
+            transform: translateY(0);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .form-footer a {
+            color: var(--active-color);
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+            display: none;
+        }
+
+        .password-strength {
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .password-strength-meter {
+            height: 100%;
+            width: 0;
+            background-color: #f44336;
+            border-radius: 3px;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .password-strength-meter.weak {
+            width: 33%;
+            background-color: #f44336;
+        }
+
+        .password-strength-meter.medium {
+            width: 66%;
+            background-color: #ff9800;
+        }
+
+        .password-strength-meter.strong {
+            width: 100%;
+            background-color: #4caf50;
+        }
+
+        .password-requirements {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .password-requirements ul {
+            padding-left: 1rem;
+            margin: 0.5rem 0;
+        }
+
+        .password-requirements li {
+            margin-bottom: 0.2rem;
+        }
+
+        .password-requirements li.valid {
+            color: #4caf50;
+        }
+
+        /* 美化超链接样式 */
+        a {
+            color: var(--active-color);
+            text-decoration: none; /* 去除默认下划线 */
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        a:hover {
+            color: #0056b3;
+        }
+
+        a::after {
+            content: '';
+            position: absolute;
+            width: 100%; /* 默认显示完整线条 */
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--active-color);
+            transition: opacity 0.3s ease; /* 改为透明度过渡 */
+            opacity: 0; /* 默认隐藏 */
+        }
+
+        a:hover::after {
+            opacity: 1; /* 悬停时显示 */
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <div class="register-container">
+        <div class="register-logo">
+            <h1>Electronic Manager</h1>
+        </div>
+        
+        <form class="register-form" id="registerForm">
+            <div class="form-group">
+                <label for="username-for-electronic-manager">用户名</label>
+                <input type="text" id="username-for-electronic-manager" class="form-control" placeholder="请输入用户名" required>
+                <div class="error-message" id="usernameError">请输入有效的用户名</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email-for-electronic-manager">邮箱</label>
+                <input type="email" id="email-for-electronic-manager" class="form-control" placeholder="请输入邮箱地址" required>
+                <div class="error-message" id="emailError">请输入有效的邮箱地址</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password-for-electronic-manager">密码</label>
+                <input type="password" id="password-for-electronic-manager" class="form-control" placeholder="请输入密码" required>
+                <div class="password-strength">
+                    <div class="password-strength-meter" id="passwordStrength"></div>
+                </div>
+                <div class="password-requirements" id="passwordRequirements">
+                    <ul>
+                        <li id="lengthReq">至少8个字符</li>
+                        <li id="upperReq">包含大写字母</li>
+                        <li id="lowerReq">包含小写字母</li>
+                        <li id="numberReq">包含数字</li>
+                        <li id="specialReq">包含特殊字符</li>
+                    </ul>
+                </div>
+                <div class="error-message" id="passwordError">请输入密码</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm-password-for-electronic-manager">确认密码</label>
+                <input type="password" id="confirm-password-for-electronic-manager" class="form-control" placeholder="请再次输入密码" required>
+                <div class="error-message" id="confirmPasswordError">两次输入的密码不一致</div>
+            </div>
+            
+            <button type="submit" class="register-btn">注册</button>
+        </form>
+        
+        <div class="form-footer">
+            <p>已经有账户？<a href="./login.html">立即登录</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('registerForm');
+            const usernameInput = document.getElementById('username-for-electronic-manager');
+            const emailInput = document.getElementById('email-for-electronic-manager');
+            const passwordInput = document.getElementById('password-for-electronic-manager');
+            const confirmPasswordInput = document.getElementById('confirm-password-for-electronic-manager');
+            
+            const usernameError = document.getElementById('usernameError');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            
+            const passwordStrength = document.getElementById('passwordStrength');
+            const passwordRequirements = document.getElementById('passwordRequirements');
+            
+            // 密码强度检测
+            passwordInput.addEventListener('input', function() {
+                const password = this.value;
+                checkPasswordStrength(password);
+                if (password.trim()) {
+                    hideError(this, passwordError);
+                }
+                
+                // 如果确认密码不为空且与密码不匹配，则更新确认密码错误
+                if (confirmPasswordInput.value && password !== confirmPasswordInput.value) {
+                    showError(confirmPasswordInput, confirmPasswordError);
+                } else {
+                    hideError(confirmPasswordInput, confirmPasswordError);
+                }
+            });
+            
+            // 确认密码验证
+            confirmPasswordInput.addEventListener('input', function() {
+                if (this.value === passwordInput.value) {
+                    hideError(this, confirmPasswordError);
+                } else {
+                    showError(this, confirmPasswordError);
+                }
+            });
+            
+            // 用户名验证
+            usernameInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    hideError(this, usernameError);
+                }
+            });
+            
+            // 邮箱验证
+            emailInput.addEventListener('input', function() {
+                if (this.value.trim() && validateEmail(this.value)) {
+                    hideError(this, emailError);
+                }
+            });
+            
+            // 表单提交
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                
+                // 验证用户名
+                if (!usernameInput.value.trim()) {
+                    showError(usernameInput, usernameError);
+                    isValid = false;
+                } else {
+                    hideError(usernameInput, usernameError);
+                }
+                
+                // 验证邮箱
+                if (!emailInput.value.trim() || !validateEmail(emailInput.value)) {
+                    showError(emailInput, emailError);
+                    isValid = false;
+                } else {
+                    hideError(emailInput, emailError);
+                }
+                
+                // 验证密码
+                if (!passwordInput.value.trim()) {
+                    showError(passwordInput, passwordError);
+                    isValid = false;
+                } else {
+                    hideError(passwordInput, passwordError);
+                }
+                
+                // 验证确认密码
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    showError(confirmPasswordInput, confirmPasswordError);
+                    isValid = false;
+                } else {
+                    hideError(confirmPasswordInput, confirmPasswordError);
+                }
+                
+                // 如果验证通过，执行注册逻辑
+                if (isValid) {
+                    // 禁用注册按钮防止重复提交
+                    const registerBtn = document.querySelector('.register-btn');
+                    registerBtn.disabled = true;
+                    registerBtn.textContent = '注册中...';
+
+                    // 模拟向服务器发送注册信息，延迟0.7-0.8秒
+                    setTimeout(() => {
+                        // 跳转到成功页面
+                        window.location.href = './success.html?action=register';
+                    }, 750);
+                }
+            });
+            
+            // 显示错误信息
+            function showError(input, errorElement) {
+                input.style.borderColor = '#f44336';
+                errorElement.style.display = 'block';
+            }
+            
+            // 隐藏错误信息
+            function hideError(input, errorElement) {
+                input.style.borderColor = '';
+                errorElement.style.display = 'none';
+            }
+            
+            // 邮箱格式验证
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            // 密码强度检测
+            function checkPasswordStrength(password) {
+                const lengthReq = document.getElementById('lengthReq');
+                const upperReq = document.getElementById('upperReq');
+                const lowerReq = document.getElementById('lowerReq');
+                const numberReq = document.getElementById('numberReq');
+                const specialReq = document.getElementById('specialReq');
+                
+                let strength = 0;
+                const requirements = [];
+                
+                // 检查长度
+                if (password.length >= 8) {
+                    lengthReq.classList.add('valid');
+                    strength++;
+                } else {
+                    lengthReq.classList.remove('valid');
+                }
+                
+                // 检查大写字母
+                if (/[A-Z]/.test(password)) {
+                    upperReq.classList.add('valid');
+                    strength++;
+                } else {
+                    upperReq.classList.remove('valid');
+                }
+                
+                // 检查小写字母
+                if (/[a-z]/.test(password)) {
+                    lowerReq.classList.add('valid');
+                    strength++;
+                } else {
+                    lowerReq.classList.remove('valid');
+                }
+                
+                // 检查数字
+                if (/\d/.test(password)) {
+                    numberReq.classList.add('valid');
+                    strength++;
+                } else {
+                    numberReq.classList.remove('valid');
+                }
+                
+                // 检查特殊字符
+                if (/[^A-Za-z0-9]/.test(password)) {
+                    specialReq.classList.add('valid');
+                    strength++;
+                } else {
+                    specialReq.classList.remove('valid');
+                }
+                
+                // 更新强度指示器
+                passwordStrength.className = 'password-strength-meter';
+                if (strength <= 2) {
+                    passwordStrength.classList.add('weak');
+                } else if (strength <= 4) {
+                    passwordStrength.classList.add('medium');
+                } else if (strength === 5) {
+                    passwordStrength.classList.add('strong');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

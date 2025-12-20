@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../styles/base.css">
+	<link rel="stylesheet" href="../styles/settings.css">
+	<title>Settings - Electronic</title>
+</head>
+<body class="page-fade-in">
+	<div class="nav" id="nav">
+		<img src="../res/Electronic Logo.png" alt="Electronic Logo" class="logo" id="logo">
+		<div class="nav-buttons">
+			<button type="button" class="nav-btn" data-text="Basic Info" data-href="./main.html" data-theme-action="restore">⚪<span>Basic</span></button>
+			<button type="button" class="nav-btn" data-text="Accounts" data-href="./accounts.html" data-theme-action="restore">👥<span>Accounts</span></button>
+			<button type="button" class="nav-btn active" data-text="Settings" data-href="./settings.html" data-theme-action="save">⚙️<span>Settings</span></button>
+		</div>
+		<button type="button" class="toggle-nav" id="toggleNav">展开</button>
+	</div>
+
+	<div class="labels" id="labels">
+		<button class="labelsButton active" data-category="appearance" type="button">外观</button>
+		<button class="labelsButton" data-category="preferences" type="button">偏好</button>
+	</div>
+
+	<div class="content-panel" id="appearance-panel">
+		<h2>外观设置</h2>
+		<div class="setting-item">
+			<div class="setting-label">主题</div>
+			<div class="radio-group">
+				<label><input type="radio" name="theme" value="theme-light"> 浅色</label>
+				<label><input type="radio" name="theme" value="theme-dark"> 暗色</label>
+				<label><input type="radio" name="theme" value="theme-high-contrast"> 高对比</label>
+			</div>
+		</div>
+
+		<div class="setting-item">
+			<div class="setting-label">界面风格</div>
+			<div class="radio-group">
+				<label><input type="radio" name="uiStyle" value="ui-modern"> 现代</label>
+				<label><input type="radio" name="uiStyle" value="ui-classic"> 经典</label>
+			</div>
+		</div>
+
+		<div class="setting-item">
+			<div class="setting-label">字体大小</div>
+			<div class="setting-slider">
+				<input id="fontSizeRange" type="range" min="12" max="22" step="1" value="16" aria-label="字体大小滑块">
+			</div>
+			<div class="slider-value">
+				<input id="fontSizeValue" type="number" min="12" max="22" value="16" class="styled-input" aria-label="字体大小数值">
+			</div>
+		</div>
+
+		<div class="setting-item">
+			<div class="setting-label">动画时长 (ms)</div>
+			<div class="setting-slider">
+				<input id="animRange" type="range" min="50" max="2000" step="10" value="350" aria-label="动画时长滑块">
+			</div>
+			<div class="slider-value">
+				<input id="animValue" type="number" min="50" max="2000" step="10" value="350" class="styled-input" aria-label="动画时长数值">
+			</div>
+		</div>
+	</div>
+
+	<div class="content-panel" id="preferences-panel">
+		<h2>偏好</h2>
+		<div class="setting-item">
+			<div class="setting-label">通知</div>
+			<label>
+				<input id="notifEnabled" type="checkbox" />
+				<span>启用通知</span>
+			</label>
+		</div>
+
+		<div class="setting-item">
+			<div class="setting-label">音量</div>
+			<div class="setting-slider">
+				<input id="notifVolumeRange" type="range" min="0" max="100" step="1" value="80" aria-label="通知音量滑块">
+			</div>
+			<div class="slider-value">
+				<input id="notifVolumeValue" type="number" min="0" max="100" step="1" value="80" class="styled-input" aria-label="通知音量数值">
+			</div>
+		</div>
+
+		<div class="setting-item">
+			<label id="soundStyleLabel" class="setting-label">音效风格</label>
+			<select id="notifSoundStyle" data-custom aria-label="通知音效风格选择">
+				<option value="default">Default</option>
+				<option value="electronic">Electronic</option>
+				<option value="natural">Natural</option>
+				<option value="soft">Soft</option>
+			</select>
+		</div>
+		
+		<!-- 调试界面入口 -->
+		<div class="setting-item debug-tools">
+			<div class="setting-label">调试工具</div>
+			<div>
+				<a href="../pages/test.html" target="_blank" class="debug-btn">综合测试页面</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- 固定在页面底部的保存按钮 -->
+	<div class="fixed-save-bar">
+		<div class="action-buttons">
+			<button id="save-settings" class="settings-btn" disabled>保存设置</button>
+			<button id="reset-settings" class="settings-btn">恢复默认</button>
+		</div>
+	</div>
+
+	<div id="notificationContainer" class="notification-container"></div>
+
+	<script src="../scripts/base.js"></script>
+	<script src="../scripts/settings-global.js"></script>
+	<script src="../scripts/custom-select.js"></script>
+	<script src="../scripts/settings.js"></script>
+</body>
+</html>

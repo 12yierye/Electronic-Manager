@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>操作成功 - Electronic Manager</title>
+    <link rel="stylesheet" href="../styles/base.css">
+    <style>
+        body {
+            padding-left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--nav-bg) 0%, var(--bg-color) 100%);
+        }
+
+        .success-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .success-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .success-logo h1 {
+            margin: 0;
+            color: var(--active-color);
+            font-size: 2rem;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #4caf50;
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .countdown {
+            font-size: 1rem;
+            color: var(--active-color);
+            margin-top: 1rem;
+        }
+
+        /* 美化超链接样式 */
+        a {
+            color: var(--active-color);
+            text-decoration: none; /* 去除默认下划线 */
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        a:hover {
+            color: #0056b3;
+        }
+
+        a::after {
+            content: '';
+            position: absolute;
+            width: 100%; /* 默认显示完整线条 */
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--active-color);
+            transition: opacity 0.3s ease; /* 改为透明度过渡 */
+            opacity: 0; /* 默认隐藏 */
+        }
+
+        a:hover::after {
+            opacity: 1; /* 悬停时显示 */
+        }
+
+        @media (max-width: 480px) {
+            .success-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="theme-light">
+    <div class="success-container">
+        <div class="success-logo">
+            <h1>Electronic Manager</h1>
+        </div>
+        
+        <div class="success-icon">✓</div>
+        
+        <div class="success-message" id="successMessage">
+            操作成功！
+        </div>
+        
+        <div class="countdown" id="countdown">
+            页面将在 <span id="seconds">3</span> 秒后自动跳转到登录页面
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取URL参数判断是哪种操作成功
+            const urlParams = new URLSearchParams(window.location.search);
+            const action = urlParams.get('action') || 'default';
+            
+            const successMessage = document.getElementById('successMessage');
+            const secondsSpan = document.getElementById('seconds');
+            
+            // 根据不同操作显示不同消息
+            switch(action) {
+                case 'register':
+                    successMessage.textContent = '注册成功！';
+                    break;
+                case 'reset':
+                    successMessage.textContent = '密码重置成功！';
+                    break;
+                default:
+                    successMessage.textContent = '操作成功！';
+            }
+            
+            // 倒计时跳转
+            let seconds = 3;
+            const countdownInterval = setInterval(function() {
+                seconds--;
+                secondsSpan.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                    // 跳转到登录页面
+                    window.location.href = './login.html';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../styles/base.css">
+<link rel="stylesheet" href="../styles/accounts.css">
+<title>Accounts - Electronic</title>
+</head>
+<body class="page-fade-in">
+	<div class="nav" id="nav">
+		<img src="../res/Electronic Logo.png" alt="Electronic Logo" class="logo" id="logo">
+		<div class="nav-buttons">
+			<button type="button" class="nav-btn" data-text="Basic Info" data-href="./main.html" data-theme-action="restore">⚪<span>Basic</span></button>
+			<button type="button" class="nav-btn active" data-text="Accounts" data-href="./accounts.html" data-theme-action="restore">👥<span>Accounts</span></button>
+			<button type="button" class="nav-btn" data-text="Settings" data-href="./settings.html" data-theme-action="save">⚙️<span>Settings</span></button>
+		</div>
+		<button type="button" class="toggle-nav" id="toggleNav">展开</button>
+	</div>
+
+	<div class="labels" id="labels">
+		<button class="labelsButton active" data-category="accounts-overview">概览</button>
+		<button class="labelsButton" data-category="accounts-list">列表</button>
+	</div>
+
+	<div class="content-panel accounts-overview-panel" id="accounts-overview-panel">
+		<h2>Accounts 概览</h2>
+		<p>简单的账户统计示例。</p>
+		<div class="info-grid">
+			<div class="info-card"><h3>总用户</h3><p id="totalUsers">1,234</p></div>
+			<div class="info-card"><h3>在线用户</h3><p id="onlineUsers">123</p></div>
+		</div>
+	</div>
+
+	<div class="content-panel accounts-list-panel" id="accounts-list-panel">
+		<h2>账户列表</h2>
+
+		<div class="account-search-container">
+			<input id="accountSearch" placeholder="搜索用户名..." class="account-search-input">
+			<button id="addAccountBtn" class="settings-btn">添加账户</button>
+			<div class="loading-indicator" id="loadingIndicator">
+				加载中...
+			</div>
+		</div>
+
+		<table class="device-table" id="accountsTable">
+			<thead><tr><th>用户名</th><th>身份</th><th>状态</th><th>操作</th></tr></thead>
+			<tbody id="accountsTableBody">
+				<!-- 动态加载的内容将插入这里 -->
+			</tbody>
+		</table>
+		<div class="load-more-container" id="loadMoreContainer">
+			<button id="loadMoreBtn" class="settings-btn">加载更多</button>
+		</div>
+	</div>
+
+	<!-- 编辑 / 添加 模态 -->
+	<div id="accountModal" class="account-modal">
+		<div class="account-modal-content">
+			<h3 id="modalTitle">编辑账户</h3>
+			<div class="account-modal-form">
+				<input id="modalUsername" placeholder="用户名" class="account-modal-input">
+				<select id="modalRole" class="account-modal-select" title="角色" data-custom>
+					<option value="admin">Administrator</option>
+					<option value="user">User</option>
+					<option value="guest">Guest</option>
+				</select>
+				<select id="modalStatus" class="account-modal-select" title="状态" data-custom>
+					<option value="online">在线</option>
+					<option value="offline">离线</option>
+					<option value="busy">忙碌</option>
+				</select>
+				<div class="account-modal-buttons">
+					<button id="modalCancel" class="settings-btn">取消</button>
+					<button id="modalSave" class="settings-btn account-modal-save-btn">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="../scripts/base.js"></script>
+	<script src="../scripts/settings-global.js"></script>
+	<script src="../scripts/notification.js"></script>
+	<script src="../scripts/custom-select.js"></script>
+	<script src="../scripts/accounts.js"></script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知系统综合测试</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/notification.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .test-panel {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #bd2130;
+        }
+
+        .btn-group {
+            margin: 10px 0;
+        }
+
+        .debug-info {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .debug-info h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+
+        .debug-output {
+            height: 150px;
+            overflow-y: auto;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 10px;
+            white-space: pre-wrap;
+        }
+
+        .notification-count {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>通知系统综合测试</h1>
+        
+        <div class="test-panel">
+            <div class="panel-title">创建自定义通知</div>
+            <div class="form-group">
+                <label for="notificationType">通知类型</label>
+                <select id="notificationType">
+                    <option value="info">信息</option>
+                    <option value="success">成功</option>
+                    <option value="warning">警告</option>
+                    <option value="error">错误</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="notificationTitle">标题</label>
+                <input type="text" id="notificationTitle" value="测试通知">
+            </div>
+            
+            <div class="form-group">
+                <label for="notificationMessage">消息内容</label>
+                <textarea id="notificationMessage">这是一个测试通知消息内容。</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="notificationDuration">显示时长 (毫秒)</label>
+                <input type="number" id="notificationDuration" value="3000" min="1000">
+            </div>
+            
+            <button class="btn" onclick="createTestNotification()">创建通知</button>
+            <button class="btn btn-secondary" onclick="clearAllNotifications()">清空所有通知</button>
+        </div>
+        
+        <div class="test-panel">
+            <div class="panel-title">预设通知示例</div>
+            <div class="btn-group">
+                <button class="btn" onclick="createInfoNotification()">信息通知</button>
+                <button class="btn btn-success" onclick="createSuccessNotification()">成功通知</button>
+                <button class="btn btn-warning" onclick="createWarningNotification()">警告通知</button>
+                <button class="btn btn-danger" onclick="createErrorNotification()">错误通知</button>
+            </div>
+        </div>
+        
+        <div class="test-panel">
+            <div class="panel-title">批量创建通知测试</div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="createSimultaneousNotifications()">同时创建3个通知</button>
+                <button class="btn btn-warning" onclick="createStaggeredNotifications()">错开创建3个通知</button>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-success" onclick="createMultipleNotifications(3)">创建3个通知</button>
+                <button class="btn btn-warning" onclick="createMultipleNotifications(5)">创建5个通知</button>
+                <button class="btn btn-danger" onclick="createMultipleNotifications(10)">创建10个通知</button>
+            </div>
+        </div>
+        
+        <div class="test-panel">
+            <div class="panel-title">调试信息</div>
+            <div class="debug-info">
+                <h3>通知系统状态</h3>
+                <p>当前活动通知数量: <span id="notificationCount" class="notification-count">0</span></p>
+                <h3>系统日志</h3>
+                <div id="debugOutput" class="debug-output"></div>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="clearDebugOutput()">清空日志</button>
+                    <button class="btn" onclick="updateNotificationCount()">刷新计数</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 确保通知容器存在 -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <script src="../scripts/base.js"></script>
+    <script>
+        // 初始化调试信息
+        function initDebugInfo() {
+            logDebugInfo('通知系统测试页面已加载');
+            updateNotificationCount();
+        }
+
+        // 记录调试信息
+        function logDebugInfo(message) {
+            const debugOutput = document.getElementById('debugOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            debugOutput.textContent += `[${timestamp}] ${message}\n`;
+            debugOutput.scrollTop = debugOutput.scrollHeight;
+        }
+
+        // 清空调试输出
+        function clearDebugOutput() {
+            document.getElementById('debugOutput').textContent = '';
+        }
+
+        // 更新通知计数
+        function updateNotificationCount() {
+            const container = document.getElementById('notificationContainer');
+            const count = container ? container.querySelectorAll('.notification').length : 0;
+            document.getElementById('notificationCount').textContent = count;
+            logDebugInfo(`更新通知计数: ${count}`);
+        }
+
+        // 创建测试通知
+        function createTestNotification() {
+            const type = document.getElementById('notificationType').value;
+            const title = document.getElementById('notificationTitle').value;
+            const message = document.getElementById('notificationMessage').value;
+            const duration = parseInt(document.getElementById('notificationDuration').value);
+            
+            const id = createNotification(type, title, message, duration);
+            logDebugInfo(`创建通知 - ID: ${id}, 类型: ${type}, 标题: ${title}`);
+            updateNotificationCount();
+            return id;
+        }
+
+        // 预设通知示例
+        function createSuccessNotification() {
+            const id = createNotification('success', '操作成功', '您的操作已成功完成。', 3000);
+            logDebugInfo(`创建成功通知 - ID: ${id}`);
+            updateNotificationCount();
+            return id;
+        }
+
+        function createWarningNotification() {
+            const id = createNotification('warning', '注意警告', '请注意，某些操作可能需要额外关注。', 3000);
+            logDebugInfo(`创建警告通知 - ID: ${id}`);
+            updateNotificationCount();
+            return id;
+        }
+
+        function createErrorNotification() {
+            const id = createNotification('error', '操作失败', '执行操作时发生错误，请稍后重试。', 3000);
+            logDebugInfo(`创建错误通知 - ID: ${id}`);
+            updateNotificationCount();
+            return id;
+        }
+
+        function createInfoNotification() {
+            const id = createNotification('info', '信息提示', '这是系统提供的相关信息。', 3000);
+            logDebugInfo(`创建信息通知 - ID: ${id}`);
+            updateNotificationCount();
+            return id;
+        }
+
+        // 同时创建多个通知
+        function createSimultaneousNotifications() {
+            logDebugInfo('开始同时创建3个通知');
+            createNotification('info', '信息通知 1', '这是第一条同时创建的通知', 5000);
+            createNotification('success', '成功通知 2', '这是第二条同时创建的通知', 5000);
+            createNotification('warning', '警告通知 3', '这是第三条同时创建的通知', 5000);
+            updateNotificationCount();
+        }
+
+        // 错开创建多个通知
+        function createStaggeredNotifications() {
+            logDebugInfo('开始错开创建3个通知');
+            createNotification('info', '信息通知 1', '这是第一条错开创建的通知', 5000);
+            setTimeout(() => {
+                createNotification('success', '成功通知 2', '这是第二条错开创建的通知', 5000);
+                updateNotificationCount();
+            }, 200);
+            setTimeout(() => {
+                createNotification('warning', '警告通知 3', '这是第三条错开创建的通知', 5000);
+                updateNotificationCount();
+            }, 400);
+        }
+
+        // 创建多个通知
+        function createMultipleNotifications(count) {
+            logDebugInfo(`开始创建${count}个通知`);
+            const types = ['info', 'success', 'warning', 'error'];
+            const titles = ['信息通知', '成功通知', '警告通知', '错误通知'];
+            const messages = [
+                '这是一条信息通知消息。',
+                '操作成功完成！',
+                '请注意这个警告信息。',
+                '发生了一个错误，请检查。'
+            ];
+            
+            for (let i = 0; i < count; i++) {
+                const typeIndex = i % types.length;
+                // 使用setTimeout来模拟几乎同时创建多个通知
+                setTimeout(() => {
+                    createNotification(
+                        types[typeIndex], 
+                        titles[typeIndex] + ' ' + (Math.floor(i/types.length) + 1), 
+                        messages[typeIndex] + ' (编号: ' + (i+1) + ')',
+                        5000
+                    );
+                    updateNotificationCount();
+                }, i * 100); // 稍微错开时间以确保正确创建
+            }
+        }
+
+        // 重写 clearAllNotifications 函数以添加调试信息
+        const originalClearAllNotifications = clearAllNotifications;
+        clearAllNotifications = function() {
+            originalClearAllNotifications();
+            logDebugInfo('清空所有通知');
+            updateNotificationCount();
+        };
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initDebugInfo();
+        });
+    </script>
+</body>
+</html>

@@ -252,11 +252,6 @@ body.page-fade-in {
     transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-.toggle-nav:hover {
-    background-color: var(--nav-hover);
-    transform: scale(1.04);
-}
-
 .toggle-nav .toggle-icon {
     width: calc(var(--font-size, 16px) * 1.375);
     height: calc(var(--font-size, 16px) * 1.375);

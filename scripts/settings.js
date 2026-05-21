@@ -359,7 +359,7 @@ function initializeSettingsControls() {
     document.getElementById('save-settings').addEventListener('click', ()=> {
         const saveButton = document.getElementById('save-settings');
         
-        // 保存 theme 与偏好
+        // 保存 theme 与 通知设置
         const obj = {
             htmlClass: document.documentElement.className || '',
             fontSize: getComputedStyle(document.documentElement).getPropertyValue('--font-size') || '16px'
@@ -424,7 +424,7 @@ function initializeSettingsControls() {
         animValue.value = 350;
         applyAnim(350);
         
-        // 重置偏好设置
+        // 重置通知设置
         const notifEnabled = document.getElementById('notifEnabled');
         const notifRange = document.getElementById('notifVolumeRange');
         const notifValue = document.getElementById('notifVolumeValue');

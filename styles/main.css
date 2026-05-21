@@ -261,11 +261,13 @@ tr.error {
 }
 
 tr.warning:hover {
-    background-color: rgba(245, 158, 11, 0.15);
+    background-color: rgba(245, 158, 11, 0.12);
+    box-shadow: inset 3px 0 0 rgba(245, 158, 11, 0.6);
 }
 
 tr.error:hover {
-    background-color: rgba(239, 68, 68, 0.15);
+    background-color: rgba(239, 68, 68, 0.12);
+    box-shadow: inset 3px 0 0 rgba(239, 68, 68, 0.6);
 }
 
 /* 主题特定 */

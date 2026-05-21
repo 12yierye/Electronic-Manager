@@ -240,7 +240,6 @@ function setupNavigation() {
     function updateNavState(expanded) {
         nav.classList.toggle('expanded', expanded);
         document.body.classList.toggle('nav-expanded', expanded);
-        toggleBtn.textContent = expanded ? '折叠' : '展开';
         localStorage.setItem('navExpanded', expanded.toString()); // 确保存储的是字符串
     }
     

@@ -237,21 +237,34 @@ body.page-fade-in {
 }
 
 .toggle-nav {
-    position: absolute;
-    bottom: calc(var(--font-size, 16px) * 2.5);
-    width: calc(var(--font-size, 16px) * 3.75);
-    height: calc(var(--font-size, 16px) * 2.5);
-    border-radius: 8px;
+    width: calc(var(--font-size, 16px) * 3.125);
+    height: calc(var(--font-size, 16px) * 3.125);
+    border-radius: 10px;
     border: none;
-    background-color: var(--active-color);
-    color: white;
+    background-color: transparent;
+    color: var(--nav-text);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 101;
-    font-size: calc(var(--font-size, 16px) * 0.875);
+    flex-shrink: 0;
+    margin-bottom: calc(var(--font-size, 16px) * 0.5);
     transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.toggle-nav:hover {
+    background-color: var(--nav-hover);
+    transform: scale(1.04);
+}
+
+.toggle-nav .toggle-icon {
+    width: calc(var(--font-size, 16px) * 1.375);
+    height: calc(var(--font-size, 16px) * 1.375);
+    transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.nav.expanded .toggle-nav .toggle-icon {
+    transform: rotate(180deg);
 }
 
 .toggle-nav:hover {

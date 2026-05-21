@@ -12,16 +12,17 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, var(--nav-bg) 0%, var(--bg-color) 100%);
+            background: var(--bg-color);
+            font-family: var(--font-family, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif);
         }
 
         .forget-container {
             width: 100%;
-            max-width: 400px;
-            padding: 2rem;
+            max-width: 420px;
+            padding: 2.5rem;
             background-color: var(--panel-bg);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
             border: 1px solid var(--border-color);
         }
 
@@ -32,8 +33,13 @@
 
         .forget-logo h1 {
             margin: 0;
+            color: var(--text-color);
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .forget-logo h1 span {
             color: var(--active-color);
-            font-size: 2rem;
         }
 
         .forget-form {
@@ -45,28 +51,29 @@
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: 0.4rem;
         }
 
         .form-group label {
             font-weight: 500;
             color: var(--text-color);
+            font-size: 0.9rem;
         }
 
         .form-control {
-            padding: 0.8rem 1rem;
+            padding: 0.75rem 1rem;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--panel-bg);
+            border-radius: 10px;
+            background-color: var(--bg-color);
             color: var(--text-color);
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--active-color);
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            box-shadow: 0 0 0 3px rgba(79, 110, 247, 0.15);
         }
 
         .form-control:hover {
@@ -74,48 +81,57 @@
         }
 
         .forget-btn {
-            padding: 0.8rem 1rem;
+            padding: 0.75rem 1rem;
             background-color: var(--active-color);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             margin-top: 0.5rem;
         }
 
         .forget-btn:hover {
-            background-color: #0056b3;
+            background-color: var(--active-hover);
+            box-shadow: 0 4px 12px rgba(79, 110, 247, 0.3);
+        }
+
+        .forget-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .form-footer {
             text-align: center;
-            margin-top: 1rem;
-            color: var(--text-color);
+            margin-top: 1.2rem;
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
-        .form-footer a {
+        .form-footer a,
+        .footer-link {
             color: var(--active-color);
             text-decoration: none;
+            font-weight: 500;
         }
 
-        .form-footer a:hover {
+        .form-footer a:hover,
+        .footer-link:hover {
             text-decoration: underline;
         }
 
         .error-message {
-            color: #f44336;
-            font-size: 0.9rem;
+            color: #ef4444;
+            font-size: 0.85rem;
             margin-top: 0.2rem;
             display: none;
         }
 
         .success-message {
-            color: #4caf50;
-            font-size: 0.9rem;
+            color: #22c55e;
+            font-size: 0.85rem;
             margin-top: 0.2rem;
             display: none;
         }
@@ -135,10 +151,10 @@
         }
 
         .verification-code input {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             padding: 0;
         }
 
@@ -147,14 +163,38 @@
             margin-top: 1rem;
         }
 
+        .resend-section a {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--active-color);
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .resend-section a:hover {
+            background-color: var(--nav-hover);
+            border-color: var(--active-color);
+        }
+
+        .resend-section a.disabled {
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         .step-title {
             text-align: center;
             margin-top: 0;
+            color: var(--text-color);
         }
 
         .step-description {
             text-align: center;
-            color: var(--text-color);
+            color: var(--text-secondary);
         }
 
         .shake {
@@ -167,83 +207,16 @@
             40%, 80% { transform: translateX(5px); }
         }
 
-        /* 美化超链接样式 */
-        a {
-            color: var(--active-color);
-            text-decoration: none; /* 去除默认下划线 */
-            transition: color 0.3s ease;
-            position: relative;
-        }
-
-        a:hover {
-            color: #0056b3;
-        }
-
-        a::after {
-            content: '';
-            position: absolute;
-            width: 100%; /* 默认显示完整线条 */
-            height: 1px;
-            bottom: -2px;
-            left: 0;
-            background-color: var(--active-color);
-            transition: opacity 0.3s ease; /* 改为透明度过渡 */
-            opacity: 0; /* 默认隐藏 */
-        }
-
-        a:hover::after {
-            opacity: 1; /* 悬停时显示 */
-        }
-
-        /* 重新发送验证码链接的特殊样式 */
-        .resend-section a {
-            display: inline-block;
-            padding: 8px 16px;
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            color: var(--active-color);
-            transition: all 0.3s ease;
-            text-decoration: none; /* 确保没有下划线 */
-        }
-
-        .resend-section a:hover {
-            background-color: var(--nav-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .resend-section a.disabled {
-            color: #999;
-            cursor: not-allowed;
-            background-color: var(--panel-bg);
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* 页脚链接样式 */
-        .footer-link {
-            color: var(--active-color);
-            text-decoration: none;
-            transition: color 0.3s ease;
-            padding: 4px 8px;
-            border-radius: 4px;
-            text-decoration: none; /* 确保没有下划线 */
-        }
-
-        .footer-link:hover {
-            background-color: var(--nav-hover);
-        }
-
         @media (max-width: 480px) {
             .forget-container {
                 margin: 1rem;
                 padding: 1.5rem;
             }
-            
+
             .verification-code input {
-                width: 35px;
-                height: 35px;
+                width: 36px;
+                height: 36px;
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -251,14 +224,14 @@
 <body class="theme-light">
     <div class="forget-container">
         <div class="forget-logo">
-            <h1>Electronic Manager</h1>
+            <h1><span>Electronic</span> Manager</h1>
         </div>
-        
+
         <!-- 步骤1：输入邮箱 -->
         <div class="step active" id="step1">
             <h2 class="step-title">找回密码</h2>
             <p class="step-description">请输入您的邮箱地址，我们将向您发送验证码</p>
-            
+
             <form class="forget-form" id="emailForm">
                 <div class="form-group">
                     <label for="email-for-electronic-manager">邮箱</label>
@@ -266,16 +239,16 @@
                     <div class="error-message" id="emailError">请输入有效的邮箱地址</div>
                     <div class="success-message" id="emailSuccess">验证码已发送，请查收邮件</div>
                 </div>
-                
+
                 <button type="submit" class="forget-btn">发送验证码</button>
             </form>
         </div>
-        
+
         <!-- 步骤2：输入验证码 -->
         <div class="step" id="step2">
             <h2 class="step-title">验证身份</h2>
             <p class="step-description">我们已向您的邮箱发送了验证码，请查收</p>
-            
+
             <form class="forget-form" id="verifyForm">
                 <div class="form-group">
                     <label for="verification">验证码</label>
@@ -289,55 +262,49 @@
                     </div>
                     <div class="error-message" id="codeError">验证码错误</div>
                 </div>
-                
-                <!-- 移除提交按钮，验证码输满6位后自动提交 -->
             </form>
-            
+
             <div class="resend-section">
                 <a href="#" id="resendCode">重新发送验证码</a>
             </div>
         </div>
-        
+
         <!-- 步骤3：重置密码 -->
         <div class="step" id="step3">
             <h2 class="step-title">重置密码</h2>
             <p class="step-description">请输入新的密码</p>
-            
+
             <form class="forget-form" id="resetForm">
                 <div class="form-group">
                     <label for="new-password-for-electronic-manager">新密码</label>
                     <input type="password" id="new-password-for-electronic-manager" class="form-control" placeholder="请输入新密码" required>
                     <div class="error-message" id="newPasswordError">请输入新密码</div>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="confirm-password-for-electronic-manager">确认密码</label>
                     <input type="password" id="confirm-password-for-electronic-manager" class="form-control" placeholder="请再次输入新密码" required>
                     <div class="error-message" id="confirmPasswordError">两次输入的密码不一致</div>
                 </div>
-                
+
                 <button type="submit" class="forget-btn">重置密码</button>
             </form>
         </div>
-        
+
         <div class="form-footer">
-            <p><a href="./login.html" class="footer-link">返回登录</a></p>
+            <p><a href="./login.html">返回登录</a></p>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 获取步骤元素
             const step1 = document.getElementById('step1');
             const step2 = document.getElementById('step2');
             const step3 = document.getElementById('step3');
-            
-            // 表单元素
+
             const emailForm = document.getElementById('emailForm');
-            const verifyForm = document.getElementById('verifyForm');
             const resetForm = document.getElementById('resetForm');
-            
-            // 输入元素
+
             const emailInput = document.getElementById('email-for-electronic-manager');
             const codeInputs = [
                 document.getElementById('code1'),
@@ -349,225 +316,126 @@
             ];
             const newPasswordInput = document.getElementById('new-password-for-electronic-manager');
             const confirmPasswordInput = document.getElementById('confirm-password-for-electronic-manager');
-            
-            // 错误信息元素
+
             const emailError = document.getElementById('emailError');
             const emailSuccess = document.getElementById('emailSuccess');
             const codeError = document.getElementById('codeError');
             const newPasswordError = document.getElementById('newPasswordError');
             const confirmPasswordError = document.getElementById('confirmPasswordError');
-            
-            // 重新发送验证码链接
+
             const resendCode = document.getElementById('resendCode');
-            
-            // 邮箱验证
+
+            function showError(input, errorElement) {
+                input.style.borderColor = '#ef4444';
+                errorElement.style.display = 'block';
+            }
+
+            function hideError(input, errorElement) {
+                input.style.borderColor = '';
+                errorElement.style.display = 'none';
+            }
+
+            function validateEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+
+            function showStep(step) {
+                [step1, step2, step3].forEach(s => s.classList.remove('active'));
+                step.classList.add('active');
+            }
+
             emailInput.addEventListener('input', function() {
                 if (this.value.trim() && validateEmail(this.value)) {
                     hideError(emailInput, emailError);
                 }
             });
-            
+
+            // 邮箱表单提交
+            emailForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = emailInput.value.trim();
+
+                if (!email || !validateEmail(email)) {
+                    showError(emailInput, emailError);
+                    return;
+                }
+
+                emailSuccess.style.display = 'block';
+                setTimeout(() => {
+                    emailSuccess.style.display = 'none';
+                    showStep(step2);
+                }, 1000);
+            });
+
             // 验证码输入自动聚焦
             codeInputs.forEach((input, index) => {
                 input.addEventListener('input', function() {
+                    // 只允许数字
+                    this.value = this.value.replace(/[^0-9]/g, '');
                     if (this.value && index < codeInputs.length - 1) {
                         codeInputs[index + 1].focus();
                     }
-                    
-                    // 检查是否所有输入框都已填写
-                    const allFilled = codeInputs.every(input => input.value);
+                    const allFilled = codeInputs.every(inp => inp.value);
                     if (allFilled) {
-                        // 自动提交验证码
                         submitVerificationCode();
                     }
                 });
-                
+
                 input.addEventListener('keydown', function(e) {
                     if (e.key === 'Backspace' && !this.value && index > 0) {
                         codeInputs[index - 1].focus();
                     }
                 });
             });
-            
-            // 提交验证码的函数
+
             function submitVerificationCode() {
-                // 获取验证码
                 const code = codeInputs.map(input => input.value).join('');
-                
-                // 模拟验证验证码（这里假设验证码应该是"123456"）
                 if (code === '123456') {
-                    // 验证成功，切换到下一步
-                    console.log('验证验证码:', code);
-                    step2.classList.remove('active');
-                    step3.classList.add('active');
+                    codeError.style.display = 'none';
+                    showStep(step3);
                 } else {
-                    // 验证失败，清空输入框并添加晃动效果
-                    codeInputs.forEach(input => input.value = '');
-                    const verificationGroup = document.querySelector('.verification-code');
-                    verificationGroup.classList.add('shake');
-                    
-                    // 显示错误信息
-                    showError(null, codeError);
-                    
-                    // 移除晃动效果
-                    setTimeout(() => {
-                        verificationGroup.classList.remove('shake');
-                    }, 500);
-                    
-                    // 重新聚焦第一个输入框
+                    codeError.style.display = 'block';
+                    codeInputs.forEach(inp => { inp.value = ''; });
                     codeInputs[0].focus();
                 }
             }
-            
-            // 新密码验证
-            newPasswordInput.addEventListener('input', function() {
-                if (this.value.trim()) {
-                    hideError(this, newPasswordError);
-                }
-            });
-            
-            // 确认密码验证
-            confirmPasswordInput.addEventListener('input', function() {
-                if (this.value === newPasswordInput.value) {
-                    hideError(this, confirmPasswordError);
-                } else {
-                    showError(this, confirmPasswordError);
-                }
-            });
-            
-            // 发送验证码表单提交
-            emailForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                if (!emailInput.value.trim() || !validateEmail(emailInput.value)) {
-                    showError(emailInput, emailError);
-                    return;
-                }
-                
-                // 模拟发送验证码
-                console.log('发送验证码到邮箱:', emailInput.value);
-                
-                // 显示成功消息
-                emailSuccess.style.display = 'block';
-                
-                // 禁用重新发送链接并启动倒计时
-                disableResendLink();
-                
-                // 切换到下一步
-                setTimeout(() => {
-                    step1.classList.remove('active');
-                    step2.classList.add('active');
-                }, 1000);
-            });
-            
-            // 验证验证码表单提交
-            verifyForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // 注意：这个函数现在不会被触发，因为我们已经移除了提交按钮
-                // 验证码会在输入满6位后自动提交
-                submitVerificationCode();
-            });
-            
+
             // 重新发送验证码
             resendCode.addEventListener('click', function(e) {
                 e.preventDefault();
-                
-                // 检查是否禁用
-                if (resendCode.classList.contains('disabled')) {
-                    return;
-                }
-                
-                // 清空验证码输入框
-                codeInputs.forEach(input => input.value = '');
-                
-                // 重新聚焦第一个输入框
-                codeInputs[0].focus();
-                
-                // 模拟重新发送验证码
-                console.log('重新发送验证码到邮箱:', emailInput.value);
-                emailSuccess.style.display = 'block';
-                
-                // 禁用重新发送链接并启动倒计时
-                disableResendLink();
-            });
-            
-            // 禁用重新发送链接并启动倒计时
-            function disableResendLink() {
+                if (resendCode.classList.contains('disabled')) return;
                 resendCode.classList.add('disabled');
-                resendCode.textContent = '重新发送 (60)';
-                
-                let countdown = 60;
-                const countdownInterval = setInterval(() => {
-                    countdown--;
-                    resendCode.textContent = `重新发送 (${countdown})`;
-                    
-                    if (countdown <= 0) {
-                        clearInterval(countdownInterval);
-                        resendCode.classList.remove('disabled');
-                        resendCode.textContent = '重新发送验证码';
-                    }
-                }, 1000);
-            }
-            
-            // 重置密码表单提交
+                resendCode.textContent = '验证码已重新发送';
+
+                setTimeout(() => {
+                    resendCode.classList.remove('disabled');
+                    resendCode.textContent = '重新发送验证码';
+                }, 60000);
+            });
+
+            // 重置密码表单
             resetForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
-                let isValid = true;
-                
-                // 验证新密码
-                if (!newPasswordInput.value.trim()) {
-                    showError(newPasswordInput, newPasswordError);
-                    isValid = false;
-                } else {
-                    hideError(newPasswordInput, newPasswordError);
-                }
-                
-                // 验证确认密码
-                if (newPasswordInput.value !== confirmPasswordInput.value) {
-                    showError(confirmPasswordInput, confirmPasswordError);
-                    isValid = false;
-                } else {
-                    hideError(confirmPasswordInput, confirmPasswordError);
-                }
-                
-                // 如果验证通过，执行密码重置逻辑
-                if (isValid) {
-                    // 禁用重置密码按钮防止重复提交
-                    const resetBtn = document.querySelector('.forget-btn');
-                    resetBtn.disabled = true;
-                    resetBtn.textContent = '重置中...';
+                const newPass = newPasswordInput.value.trim();
+                const confirmPass = confirmPasswordInput.value.trim();
 
-                    // 模拟向服务器发送重置密码信息，延迟0.7-0.8秒
-                    setTimeout(() => {
-                        // 跳转到成功页面
-                        window.location.href = './success.html?action=reset';
-                    }, 750);
+                if (!newPass) {
+                    showError(newPasswordInput, newPasswordError);
+                    return;
                 }
+                if (!confirmPass) {
+                    showError(confirmPasswordInput, confirmPasswordError);
+                    return;
+                }
+                if (newPass !== confirmPass) {
+                    showError(confirmPasswordInput, confirmPasswordError);
+                    return;
+                }
+
+                hideError(newPasswordInput, newPasswordError);
+                hideError(confirmPasswordInput, confirmPasswordError);
+                window.location.href = './login.html';
             });
-            
-            // 显示错误信息
-            function showError(input, errorElement) {
-                if (input) {
-                    input.style.borderColor = '#f44336';
-                }
-                errorElement.style.display = 'block';
-            }
-            
-            // 隐藏错误信息
-            function hideError(input, errorElement) {
-                if (input) {
-                    input.style.borderColor = '';
-                }
-                errorElement.style.display = 'none';
-            }
-            
-            // 邮箱格式验证
-            function validateEmail(email) {
-                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return re.test(email);
-            }
         });
     </script>
 </body>

@@ -55,7 +55,9 @@ document.addEventListener('DOMContentLoaded', function() {
 // 初始化标签下划线
 function initUnderline() {
     const labels = document.getElementById('labels');
+    if (!labels) return;
     const activeBtn = document.querySelector('.labelsButton.active');
+    if (!activeBtn) return;
     const underline = document.createElement('span');
     underline.className = 'underline';
     labels.appendChild(underline);
@@ -65,8 +67,11 @@ function initUnderline() {
 // 更新标签下划线位置
 function updateUnderlinePosition(button) {
     const underline = document.querySelector('.labels .underline');
+    if (!underline) return;
+    const labels = document.getElementById('labels');
+    if (!labels) return;
     const rect = button.getBoundingClientRect();
-    const labelsRect = document.getElementById('labels').getBoundingClientRect();
+    const labelsRect = labels.getBoundingClientRect();
     underline.style.width = `${rect.width}px`;
     underline.style.left = `${rect.left - labelsRect.left}px`;
 }

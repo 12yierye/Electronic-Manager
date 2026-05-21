@@ -475,11 +475,8 @@ function closeNotification(id) {
         
         // 动画结束后移除元素
         setTimeout(() => {
-            if (element.parentNode) {
+            if (element && element.parentNode) {
                 element.parentNode.removeChild(element);
-                
-                // 重新排列剩余的通知
-                rearrangeNotifications();
             }
             notifications.delete(id);
         }, 300);
@@ -514,7 +511,9 @@ if (document.readyState === 'loading') {
 // 初始化标签下划线
 function initUnderline() {
     const labels = document.getElementById('labels');
+    if (!labels) return;
     const activeBtn = document.querySelector('.labelsButton.active');
+    if (!activeBtn) return;
     const underline = document.createElement('span');
     underline.className = 'underline';
     labels.appendChild(underline);
@@ -538,8 +537,11 @@ function initSelectBlurHandler() {
 // 更新标签下划线位置
 function updateUnderlinePosition(button) {
     const underline = document.querySelector('.labels .underline');
+    if (!underline) return;
+    const labels = document.getElementById('labels');
+    if (!labels) return;
     const rect = button.getBoundingClientRect();
-    const labelsRect = document.getElementById('labels').getBoundingClientRect();
+    const labelsRect = labels.getBoundingClientRect();
     underline.style.width = `${rect.width}px`;
     underline.style.left = `${rect.left - labelsRect.left}px`;
 }

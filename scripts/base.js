@@ -226,7 +226,11 @@ window.restoreOriginalTheme = function() {
 };
 
 // 导航栏功能
+let _navigationInitialized = false;
 function setupNavigation() {
+    if (_navigationInitialized) return;
+    _navigationInitialized = true;
+
     const nav = document.querySelector('.nav');
     const toggleBtn = document.getElementById('toggleNav');
     const navButtons = document.querySelectorAll('.nav-btn');

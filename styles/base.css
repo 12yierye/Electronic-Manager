@@ -188,6 +188,15 @@ body.page-fade-in {
 
 .nav-btn .icon {
     display: inline-block;
+    width: calc(var(--font-size, 16px) * 1.375);
+    height: calc(var(--font-size, 16px) * 1.375);
+    flex-shrink: 0;
+}
+
+.nav-btn .icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 .nav-btn::after {

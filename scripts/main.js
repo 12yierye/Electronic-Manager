@@ -502,12 +502,12 @@ var realUptime = uptime.textContent;
 
 const SERVER_CONFIG = {
     protocol: 'http',
-    ip: '', // Unknown now, keep empty temporarily
-    port: 7062
+    ip: 'localhost',
+    port: 3001
 };
-const ifGetServerStatus = false;
+const ifGetServerStatus = true;
 function getServerStatus(path) {
-    fetch(`${SERVER_CONFIG.protocol}://${SERVER_CONFIG.ip}:${SERVER_CONFIG.ip}${path}`)
+    fetch(`${SERVER_CONFIG.protocol}://${SERVER_CONFIG.ip}:${SERVER_CONFIG.port}${path}`)
         .then(response => response.json())
         .then(data => {
             cpuUsage.textContent = data.cpuUsage + '%';
@@ -535,6 +535,16 @@ document.addEventListener('DOMContentLoaded', function() {
         setInterval(() => {
             getServerStatus('/api/status');
         }, 5000);
+
+        getServerInfo();
+        getServerStatistics();
+        getServerEvents();
+
+        setInterval(() => {
+            getServerInfo();
+            getServerStatistics();
+            getServerEvents();
+        }, 15000);
     } else {
         // 使用预设的默认值而不是"Loading..."
         var realCpuUsageNum = 42;
@@ -561,3 +571,78 @@ document.addEventListener('DOMContentLoaded', function() {
         uptime.textContent = uptimeDaysVal + ' 天 ' + uptimeHoursVal + ' 小时';
     }
 });
+
+// 获取服务器详细信息
+function getServerInfo() {
+    fetch(`${SERVER_CONFIG.protocol}://${SERVER_CONFIG.ip}:${SERVER_CONFIG.port}/api/server-info`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) return;
+            const tbody = document.getElementById('serverDetailsTable');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            const rows = [
+                { param: '操作系统', value: data.os, desc: '服务器操作系统版本' },
+                { param: '内核版本', value: data.kernel, desc: '系统内核版本' },
+                { param: 'CPU 型号', value: data.cpuModel, desc: '处理器型号' },
+                { param: 'CPU 核心数', value: data.cpuCores + ' 核', desc: '逻辑处理器核心数量' },
+                { param: '总内存', value: data.totalMemory + ' GiB', desc: 'RAM 容量' },
+                { param: '磁盘类型', value: data.diskType, desc: '主要存储设备类型' },
+                { param: '公网 IP', value: data.publicIp, desc: '服务器公网地址' },
+                { param: '负载平均值', value: data.loadAvg.join(' / '), desc: '1 / 5 / 15分钟系统负载' }
+            ];
+            rows.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${r.param}</td><td>${r.value}</td><td>${r.desc}</td>`;
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching server info:', error);
+        });
+}
+
+// 获取服务器统计
+function getServerStatistics() {
+    fetch(`${SERVER_CONFIG.protocol}://${SERVER_CONFIG.ip}:${SERVER_CONFIG.port}/api/statistics`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) return;
+            document.getElementById('todayRequests').textContent = data.todayRequests.toLocaleString();
+            document.getElementById('errorRequests').textContent = data.errorRequests.toLocaleString();
+            document.getElementById('peakConcurrency').textContent = data.peakConcurrency.toLocaleString();
+            document.getElementById('dataTransfer').textContent = data.dataTransfer;
+        })
+        .catch(error => {
+            console.error('Error fetching server statistics:', error);
+        });
+}
+
+// 获取服务器近期事件
+function getServerEvents() {
+    fetch(`${SERVER_CONFIG.protocol}://${SERVER_CONFIG.ip}:${SERVER_CONFIG.port}/api/events`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success || !data.events) return;
+            const tbody = document.getElementById('eventsTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            data.events.forEach(ev => {
+                const tr = document.createElement('tr');
+                const levelClass = ev.level === 'error' ? 'error' : ev.level === 'warning' ? 'warning' : '';
+                if (levelClass) tr.className = levelClass;
+                const statusLabel = ev.level === 'error' ? '错误' : ev.level === 'warning' ? '警告' : '信息';
+                const statusClass = ev.level === 'error' ? 'error' : ev.level === 'warning' ? 'warning' : 'online';
+                tr.innerHTML = `
+                    <td>${ev.time}</td>
+                    <td>${ev.type}</td>
+                    <td>${ev.description}</td>
+                    <td><span class="status ${statusClass}">${statusLabel}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching server events:', error);
+        });
+}

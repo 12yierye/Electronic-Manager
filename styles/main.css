@@ -214,11 +214,16 @@
 }
 
 .device-table tbody tr {
-    transition: background-color 0.15s ease;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .device-table tbody tr:hover {
     background-color: var(--nav-hover);
+    box-shadow: inset 3px 0 0 var(--active-color, #4f6ef7);
+}
+
+.device-table tbody tr:hover .status {
+    transform: scale(1.06);
 }
 
 /* 状态标签 */
@@ -253,21 +258,25 @@
 
 /* 表格行高亮 */
 tr.warning {
-    background-color: rgba(245, 158, 11, 0.08);
+    background-color: rgba(245, 158, 11, 0.06);
 }
 
 tr.error {
-    background-color: rgba(239, 68, 68, 0.08);
+    background-color: rgba(239, 68, 68, 0.06);
 }
 
 tr.warning:hover {
-    background-color: rgba(245, 158, 11, 0.12);
-    box-shadow: inset 3px 0 0 rgba(245, 158, 11, 0.6);
+    background-color: rgba(245, 158, 11, 0.15);
+    box-shadow: inset 4px 0 0 #f59e0b;
 }
 
 tr.error:hover {
-    background-color: rgba(239, 68, 68, 0.12);
-    box-shadow: inset 3px 0 0 rgba(239, 68, 68, 0.6);
+    background-color: rgba(239, 68, 68, 0.15);
+    box-shadow: inset 4px 0 0 #ef4444;
+}
+
+.status {
+    transition: transform 0.2s ease;
 }
 
 /* 主题特定 */

@@ -1,6 +1,6 @@
 # Electronic Manager
 
-Electronic Manager 是一个基于 Web 的服务器管理面板，提供直观的界面用于监控服务器状态、管理账户和自定义系统设置。
+Electronic Manager 是一个基于 Web 的 Electronic 服务端管理面板，提供直观的界面用于监控服务器状态、管理账户和自定义系统设置。
 
 ## 功能特性
 

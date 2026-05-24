@@ -164,76 +164,105 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginForm = document.getElementById('loginForm');
-            const usernameInput = document.getElementById('username-for-electronic-manager');
-            const passwordInput = document.getElementById('password-for-electronic-manager');
-            const usernameError = document.getElementById('usernameError');
-            const passwordError = document.getElementById('passwordError');
+        function getServerConfig() {
+            return {
+                protocol: location.protocol === 'https:' ? 'https' : 'http',
+                ip: location.hostname || 'localhost',
+                port: 3001
+            };
+        }
 
-            // 表单验证和提交
+        document.addEventListener('DOMContentLoaded', function() {
+            var loginForm = document.getElementById('loginForm');
+            var usernameInput = document.getElementById('username-for-electronic-manager');
+            var passwordInput = document.getElementById('password-for-electronic-manager');
+            var usernameError = document.getElementById('usernameError');
+            var passwordError = document.getElementById('passwordError');
+
+            var generalError = document.createElement('div');
+            generalError.className = 'error-message';
+            generalError.id = 'generalError';
+            generalError.style.display = 'none';
+            generalError.style.textAlign = 'center';
+            generalError.style.marginTop = '0.5rem';
+            loginForm.querySelector('.login-btn').after(generalError);
+
             loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
-                let isValid = true;
-                
-                // 验证用户名
+
+                var isValid = true;
+
                 if (!usernameInput.value.trim()) {
                     showError(usernameInput, usernameError);
                     isValid = false;
                 } else {
                     hideError(usernameInput, usernameError);
                 }
-                
-                // 验证密码
+
                 if (!passwordInput.value.trim()) {
                     showError(passwordInput, passwordError);
                     isValid = false;
                 } else {
                     hideError(passwordInput, passwordError);
                 }
-                
-                // 如果验证通过，执行登录逻辑
+
                 if (isValid) {
-                    // 这里应该发送登录请求到服务器
-                    console.log('登录信息:', {
-                        username: usernameInput.value,
-                        password: passwordInput.value
-                    });
-                    
-                    // 禁用登录按钮防止重复提交
-                    const loginBtn = document.querySelector('.login-btn');
+                    var server = getServerConfig();
+                    var loginBtn = document.querySelector('.login-btn');
                     loginBtn.disabled = true;
                     loginBtn.textContent = '登录中...';
+                    generalError.style.display = 'none';
 
-                    // 模拟向服务器发送登录信息，延迟0.7-0.8秒
-                    setTimeout(() => {
-                        // 跳转到主页面
-                        window.location.href = './main.html';
-                    }, 750);
+                    fetch(server.protocol + '://' + server.ip + ':' + server.port + '/api/accounts/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            username: usernameInput.value.trim(),
+                            password: passwordInput.value
+                        })
+                    })
+                        .then(function(res) { return res.json(); })
+                        .then(function(data) {
+                            if (data.success) {
+                                localStorage.setItem('manager_auth', JSON.stringify({
+                                    token: data.token,
+                                    username: data.username,
+                                    role: data.role
+                                }));
+                                window.location.href = './main.html';
+                            } else {
+                                generalError.textContent = data.message || '登录失败，请检查用户名和密码';
+                                generalError.style.display = 'block';
+                                loginBtn.disabled = false;
+                                loginBtn.textContent = '登录';
+                            }
+                        })
+                        .catch(function() {
+                            generalError.textContent = '网络错误，无法连接到服务端';
+                            generalError.style.display = 'block';
+                            loginBtn.disabled = false;
+                            loginBtn.textContent = '登录';
+                        });
                 }
             });
-            
-            // 输入框事件监听
+
             usernameInput.addEventListener('input', function() {
                 if (this.value.trim()) {
                     hideError(this, usernameError);
                 }
             });
-            
+
             passwordInput.addEventListener('input', function() {
                 if (this.value.trim()) {
                     hideError(this, passwordError);
                 }
             });
-            
-            // 显示错误信息
+
             function showError(input, errorElement) {
                 input.style.borderColor = '#f44336';
                 errorElement.style.display = 'block';
             }
-            
-            // 隐藏错误信息
+
             function hideError(input, errorElement) {
                 input.style.borderColor = '';
                 errorElement.style.display = 'none';

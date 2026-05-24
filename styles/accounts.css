@@ -133,6 +133,18 @@
     font-weight: 700;
     margin: 0;
     color: var(--active-color);
+    transition: color 0.3s ease;
+}
+
+.info-card p.value-updated {
+    color: #4ade80;
+    animation: valuePulse 0.6s ease-out;
+}
+
+@keyframes valuePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
 }
 
 /* 表格样式 */
@@ -266,6 +278,43 @@ tr.error {
     padding: 8px;
     color: var(--text-secondary);
     font-size: 0.9rem;
+}
+
+.loading-indicator.active {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.loading-text {
+    animation: loadingPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.account-error {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 24px;
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.account-error.active {
+    display: flex;
+}
+
+.account-error-text {
+    margin: 0;
+    color: #dc2626;
+    font-size: 0.95rem;
 }
 
 .load-more-container {
@@ -422,6 +471,17 @@ tr.error {
     background-color: #dc2626;
 }
 
+.delete-btn:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.settings-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 .back-button {
     margin-bottom: 16px;
     padding: 8px 16px;
@@ -448,4 +508,63 @@ a {
 
 a:hover {
     color: var(--active-hover);
+}
+
+/* 登录状态栏 */
+.login-status {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.logout-btn {
+    padding: 4px 12px !important;
+    font-size: 0.8rem !important;
+}
+
+/* 角色徽章 */
+.role-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.role-badge.role-admin {
+    background-color: rgba(79, 110, 247, 0.15);
+    color: var(--active-color);
+}
+
+.role-badge.role-guest {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+}
+
+/* 离线队列状态 */
+.offline-status {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 9999;
+    padding: 10px 20px;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #d97706;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
 }

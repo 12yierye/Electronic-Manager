@@ -39,42 +39,49 @@
             <h2 class="time-label">当前时间</h2>
             <p class="time-value" id="currentTime">Loading...</p>
         </div>
-        <h2>服务器状态概览</h2>
-        <p>当前服务器运行状态的基本信息</p>
-        <button class="refresh" type="button" id="refreshBtn">刷新</button>
-        <h3>处理器资源</h3>
-        <div class="info-grid">
-            <div class="info-card">
-                <h3>CPU 使用率</h3>
-                <p id="cpuUsage">Loading...</p>
-            </div>
-            <div class="info-card">
-                <h3>活动进程</h3>
-                <p id="processCount">Loading...</p>
-            </div>
+        <div class="section-header">
+            <h2>服务器状态概览</h2>
+            <button class="refresh" type="button" id="refreshBtn">
+                <svg class="refresh-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                <span>刷新</span>
+            </button>
         </div>
-        
-        <h3>内存与存储</h3>
-        <div class="info-grid">
-            <div class="info-card">
-                <h3>内存使用</h3>
-                <p id="memoryUsage">Loading...</p>
+        <p class="status-subtitle">当前服务器运行状态的基本信息</p>
+        <div id="server-status-container">
+            <h3>处理器资源</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>CPU 使用率</h3>
+                    <p id="cpuUsage">Loading...</p>
+                </div>
+                <div class="info-card">
+                    <h3>活动进程</h3>
+                    <p id="processCount">Loading...</p>
+                </div>
             </div>
-            <div class="info-card">
-                <h3>磁盘使用</h3>
-                <p id="diskUsage">Loading...</p>
+            
+            <h3>内存与存储</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>内存使用</h3>
+                    <p id="memoryUsage">Loading...</p>
+                </div>
+                <div class="info-card">
+                    <h3>磁盘使用</h3>
+                    <p id="diskUsage">Loading...</p>
+                </div>
             </div>
-        </div>
-        
-        <h3>网络与连接</h3>
-        <div class="info-grid">
-            <div class="info-card">
-                <h3>网络流量</h3>
-                <p id="networkTraffic">Loading...</p>
-            </div>
-            <div class="info-card">
-                <h3>运行时间</h3>
-                <p id="uptime">Loading...</p>
+            
+            <h3>网络与连接</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>网络流量</h3>
+                    <p id="networkTraffic">Loading...</p>
+                </div>
+                <div class="info-card">
+                    <h3>运行时间</h3>
+                    <p id="uptime">Loading...</p>
+                </div>
             </div>
         </div>
     </div>

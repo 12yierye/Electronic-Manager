@@ -29,8 +29,8 @@
 		<h2>Accounts 概览</h2>
 		<p>简单的账户统计示例。</p>
 		<div class="info-grid">
-			<div class="info-card"><h3>总用户</h3><p id="totalUsers">1,234</p></div>
-			<div class="info-card"><h3>在线用户</h3><p id="onlineUsers">123</p></div>
+			<div class="info-card"><h3>总用户</h3><p id="totalUsers">Loading...</p></div>
+			<div class="info-card"><h3>在线用户</h3><p id="onlineUsers">Loading...</p></div>
 		</div>
 	</div>
 
@@ -39,10 +39,16 @@
 
 		<div class="account-search-container">
 			<input id="accountSearch" placeholder="搜索用户名..." class="account-search-input">
+			<button id="refreshAccountsBtn" class="settings-btn">刷新</button>
 			<button id="addAccountBtn" class="settings-btn">添加账户</button>
 			<div class="loading-indicator" id="loadingIndicator">
-				加载中...
+				<span class="loading-text">加载中...</span>
 			</div>
+		</div>
+
+		<div class="account-error" id="accountError">
+			<p class="account-error-text" id="accountErrorText">获取账户列表失败</p>
+			<button id="retryLoadBtn" class="settings-btn">重试</button>
 		</div>
 
 		<table class="device-table" id="accountsTable">
@@ -62,6 +68,7 @@
 			<h3 id="modalTitle">编辑账户</h3>
 			<div class="account-modal-form">
 				<input id="modalUsername" placeholder="用户名" class="account-modal-input">
+				<input id="modalPassword" type="password" placeholder="密码" class="account-modal-input" style="display:none">
 				<select id="modalRole" class="account-modal-select" title="角色" data-custom>
 					<option value="admin">Administrator</option>
 					<option value="user">User</option>
@@ -78,6 +85,18 @@
 				</div>
 			</div>
 		</div>
+	</div>
+
+	<!-- 登录状态栏 -->
+	<div id="loginStatus" class="login-status" style="display:none">
+		<span id="loginUserDisplay"></span>
+		<span id="roleBadge" class="role-badge"></span>
+		<button id="logoutBtn" class="settings-btn logout-btn">退出</button>
+	</div>
+
+	<!-- 离线队列状态 -->
+	<div id="offlineStatus" class="offline-status" style="display:none">
+		<span id="offlineCount">有操作等待网络恢复后重试</span>
 	</div>
 
 	<script src="../scripts/base.js"></script>

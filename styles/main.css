@@ -118,24 +118,110 @@
     margin: 0;
 }
 
+/* 分区标题（含刷新按钮） */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.section-header h2 {
+    margin-bottom: 0;
+}
+
+.status-subtitle {
+    margin-top: 0;
+}
+
 /* 刷新按钮 */
 .refresh {
-    padding: 8px 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
     background: var(--active-color);
     color: #fff;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: inherit;
+    font-size: 0.85rem;
     font-weight: 500;
     transition: all 0.2s ease;
-    margin-bottom: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .refresh:hover {
     background: var(--active-hover);
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(79, 110, 247, 0.3);
+}
+
+.refresh:active {
+    transform: translateY(0);
+}
+
+.refresh:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    transform: none;
+    box-shadow: none;
+    pointer-events: none;
+}
+
+.refresh .refresh-icon {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+.refresh.refreshing {
+    pointer-events: none;
+    opacity: 0.75;
+}
+
+.refresh.refreshing .refresh-icon {
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 数值更新过渡动画 */
+#server-status-container .info-card p {
+    transition: color 0.25s ease, opacity 0.25s ease;
+}
+
+#server-status-container .info-card p.value-updated {
+    animation: valuePulse 0.6s ease;
+}
+
+@keyframes valuePulse {
+    0% {
+        color: var(--active-color);
+        opacity: 1;
+        transform: scale(1);
+    }
+    30% {
+        color: #22c55e;
+        opacity: 0.85;
+        transform: scale(1.06);
+    }
+    100% {
+        color: var(--active-color);
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 刷新中容器微提示 */
+#server-status-container.status-refreshing {
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
 }
 
 /* 信息卡片网格 */

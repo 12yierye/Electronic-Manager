@@ -47,8 +47,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // 添加刷新按钮事件
     const refreshBtn = document.getElementById('refreshBtn');
     if (refreshBtn) {
-        refreshBtn.addEventListener('click', function() {
-            toOriWindow('main.html');
+        refreshBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (refreshBtn.disabled) return;
+            refreshBtn.disabled = true;
+            refreshServerStatus(true);
         });
     }
     
@@ -501,23 +504,53 @@ var realNetworkTraffic = networkTraffic.textContent;
 var realUptime = uptime.textContent;
 
 const SERVER_CONFIG = {
-    protocol: 'http',
-    ip: 'localhost',
+    protocol: location.protocol === 'https:' ? 'https' : 'http',
+    ip: location.hostname || 'localhost',
     port: 3001
 };
 const ifGetServerStatus = true;
-function getServerStatus(path) {
-    fetch(`${SERVER_CONFIG.protocol}://${SERVER_CONFIG.ip}:${SERVER_CONFIG.port}${path}`)
-        .then(response => response.json())
-        .then(data => {
-            cpuUsage.textContent = data.cpuUsage + '%';
-            processCount.textContent = data.processCount;
-            memoryUsage.textContent = data.usedMemory + '/' + data.totalMemory + ' GiB';
-            diskUsage.textContent = data.usedDisk + '/' + data.totalDisk + ' GiB';
-            networkTraffic.textContent = data.upload + '/' + data.download + ' Mbps';
-            uptime.textContent = data.uptimeDays + ' 天 ' + data.uptimeHours + ' 小时';
+
+var refreshIntervalId = null;
+
+function updateStatusValue(element, newValue) {
+    if (!element) return;
+    var oldValue = element.textContent;
+    if (oldValue === newValue) return;
+    element.classList.remove('value-updated');
+    void element.offsetWidth;
+    element.textContent = newValue;
+    element.classList.add('value-updated');
+}
+
+function refreshServerStatus(isManual) {
+    var container = document.getElementById('server-status-container');
+    var btn = document.getElementById('refreshBtn');
+    if (btn) {
+        btn.classList.add('refreshing');
+        btn.disabled = true;
+    }
+    if (container) {
+        container.classList.add('status-refreshing');
+    }
+
+    fetch(SERVER_CONFIG.protocol + '://' + SERVER_CONFIG.ip + ':' + SERVER_CONFIG.port + '/api/status')
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            updateStatusValue(cpuUsage, data.cpuUsage + '%');
+            updateStatusValue(processCount, String(data.processCount));
+            updateStatusValue(memoryUsage, data.usedMemory + '/' + data.totalMemory + ' GiB');
+            updateStatusValue(diskUsage, data.usedDisk + '/' + data.totalDisk + ' GiB');
+            updateStatusValue(networkTraffic, data.upload + '/' + data.download + ' Mbps');
+            updateStatusValue(uptime, data.uptimeDays + ' 天 ' + data.uptimeHours + ' 小时');
+
+            realCpuUsage = cpuUsage.textContent;
+            realProcessCount = processCount.textContent;
+            realMemoryUsage = memoryUsage.textContent;
+            realDiskUsage = diskUsage.textContent;
+            realNetworkTraffic = networkTraffic.textContent;
+            realUptime = uptime.textContent;
         })
-        .catch(error => {
+        .catch(function(error) {
             console.error('Error fetching server status:', error);
             cpuUsage.textContent = realCpuUsage;
             processCount.textContent = realProcessCount;
@@ -525,22 +558,36 @@ function getServerStatus(path) {
             diskUsage.textContent = realDiskUsage;
             networkTraffic.textContent = realNetworkTraffic;
             uptime.textContent = realUptime;
+        })
+        .finally(function() {
+            if (container) {
+                container.classList.remove('status-refreshing');
+            }
+            if (btn) {
+                btn.classList.remove('refreshing');
+                if (isManual) {
+                    setTimeout(function() {
+                        btn.disabled = false;
+                    }, 3000);
+                } else {
+                    btn.disabled = false;
+                }
+            }
         });
 }
 
 // 初始化服务器状态显示
 document.addEventListener('DOMContentLoaded', function() {
     if (ifGetServerStatus == true) {
-        getServerStatus('/api/status');
-        setInterval(() => {
-            getServerStatus('/api/status');
-        }, 5000);
+        refreshServerStatus();
+        if (refreshIntervalId) clearInterval(refreshIntervalId);
+        refreshIntervalId = setInterval(refreshServerStatus, 10000);
 
         getServerInfo();
         getServerStatistics();
         getServerEvents();
 
-        setInterval(() => {
+        setInterval(function() {
             getServerInfo();
             getServerStatistics();
             getServerEvents();

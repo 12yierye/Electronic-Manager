@@ -133,8 +133,24 @@ function removeLocalStorage(key) {
     }
 }
 
+// 检查页面切换动画是否启用
+function isPageTransitionEnabled() {
+    return localStorage.getItem('pageTransitionsEnabled') !== 'false';
+}
+
 // 通用导航函数（带淡入淡出效果）
 function navigateWithFade(href, themeAction) {
+    // 如果关闭了页面切换动画，直接跳转，无过渡页
+    if (!isPageTransitionEnabled()) {
+        if (themeAction === 'save' && typeof window.saveCurrentTheme === 'function') {
+            try { window.saveCurrentTheme(); } catch {}
+        } else if (themeAction === 'restore' && typeof window.restoreOriginalTheme === 'function') {
+            try { window.restoreOriginalTheme(); } catch {}
+        }
+        window.location.href = href;
+        return;
+    }
+
     document.body.classList.add('page-fade-out');
     const durationMs = getTransitionDurationMs();
 

@@ -356,6 +356,18 @@ function initializeSettingsControls() {
         enableSaveButton();
     });
 
+    // 页面切换动画
+    const pageTransEnabled = document.getElementById('pageTransitionsEnabled');
+    let pageTrans = localStorage.getItem('pageTransitionsEnabled');
+    pageTrans = (pageTrans === null) ? true : (pageTrans === 'true');
+    pageTransEnabled.checked = pageTrans;
+
+    pageTransEnabled.addEventListener('change', function() {
+        localStorage.setItem('pageTransitionsEnabled', this.checked ? 'true' : 'false');
+        enableSaveButton();
+        checkSettingsChanged();
+    });
+
     document.getElementById('save-settings').addEventListener('click', ()=> {
         const saveButton = document.getElementById('save-settings');
         
@@ -424,6 +436,13 @@ function initializeSettingsControls() {
         animValue.value = 350;
         applyAnim(350);
         
+        // 重置页面切换动画
+        const pageTransEnabledReset = document.getElementById('pageTransitionsEnabled');
+        if (pageTransEnabledReset) {
+            pageTransEnabledReset.checked = true;
+            localStorage.setItem('pageTransitionsEnabled', 'true');
+        }
+
         // 重置通知设置
         const notifEnabled = document.getElementById('notifEnabled');
         const notifRange = document.getElementById('notifVolumeRange');
@@ -512,11 +531,14 @@ function saveInitialSettings() {
     const notifRange = document.getElementById('notifVolumeRange');
     const soundStyleSel = document.getElementById('notifSoundStyle');
     
+    const pageTransEnabled = document.getElementById('pageTransitionsEnabled');
+
     window.initialSettings = {
         theme: themeRadios.length > 0 ? themeRadios[0].value : 'theme-light',
         uiStyle: uiRadios.length > 0 ? uiRadios[0].value : 'ui-modern',
         fontSize: fontRange ? fontRange.value : '16',
         animSpeed: animRange ? animRange.value : '350',
+        pageTransitionsEnabled: pageTransEnabled ? pageTransEnabled.checked : true,
         notifEnabled: notifEnabled ? notifEnabled.checked : true,
         notifVolume: notifRange ? notifRange.value : '80',
         soundStyle: soundStyleSel ? soundStyleSel.value : 'default'
@@ -533,11 +555,14 @@ function checkSettingsChanged() {
     const notifRange = document.getElementById('notifVolumeRange');
     const soundStyleSel = document.getElementById('notifSoundStyle');
     
+    const pageTransEnabled = document.getElementById('pageTransitionsEnabled');
+
     const currentSettings = {
         theme: themeRadios.length > 0 ? themeRadios[0].value : 'theme-light',
         uiStyle: uiRadios.length > 0 ? uiRadios[0].value : 'ui-modern',
         fontSize: fontRange ? fontRange.value : '16',
         animSpeed: animRange ? animRange.value : '350',
+        pageTransitionsEnabled: pageTransEnabled ? pageTransEnabled.checked : true,
         notifEnabled: notifEnabled ? notifEnabled.checked : true,
         notifVolume: notifRange ? notifRange.value : '80',
         soundStyle: soundStyleSel ? soundStyleSel.value : 'default'

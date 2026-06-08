@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录 - Electronic Manager</title>
-    <link rel="stylesheet" href="../styles/base.css">
+    <link rel="stylesheet" href="styles/base.css">
     <style>
         body {
             padding-left: 0;
@@ -229,7 +229,7 @@
                                     username: data.username,
                                     role: data.role
                                 }));
-                                window.location.href = './main.html';
+                                window.location.href = 'pages/main.html';
                             } else {
                                 generalError.textContent = data.message || '登录失败，请检查用户名和密码';
                                 generalError.style.display = 'block';

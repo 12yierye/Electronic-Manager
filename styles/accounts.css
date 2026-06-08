@@ -568,3 +568,76 @@ a:hover {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     cursor: pointer;
 }
+
+/* 弹窗新字段 */
+.account-modal-content {
+    width: 440px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.account-modal-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.managed-nodes-container {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px;
+    background: var(--panel-bg);
+}
+
+.class-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.class-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 3px 4px;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+
+.class-checkbox-label:hover {
+    background: var(--nav-hover);
+}
+
+.class-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--active-color);
+}
+
+.no-nodes-hint {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    padding: 8px;
+}
+
+.clickable-row {
+    color: var(--active-color);
+    cursor: pointer;
+}
+
+.clickable-row:hover {
+    text-decoration: underline;
+}
+
+.account-modal-field {
+    display: flex;
+    flex-direction: column;
+}

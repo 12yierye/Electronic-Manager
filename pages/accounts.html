@@ -51,8 +51,8 @@
 			<button id="retryLoadBtn" class="settings-btn">重试</button>
 		</div>
 
-		<table class="device-table" id="accountsTable">
-			<thead><tr><th>用户名</th><th>身份</th><th>状态</th><th>操作</th></tr></thead>
+      <table class="device-table" id="accountsTable">
+        <thead><tr><th>用户名</th><th>姓名</th><th>身份</th><th>状态</th><th>操作</th></tr></thead>
 			<tbody id="accountsTableBody">
 				<!-- 动态加载的内容将插入这里 -->
 			</tbody>
@@ -62,30 +62,32 @@
 		</div>
 	</div>
 
-	<!-- 编辑 / 添加 模态 -->
-	<div id="accountModal" class="account-modal">
-		<div class="account-modal-content">
-			<h3 id="modalTitle">编辑账户</h3>
-			<div class="account-modal-form">
-				<input id="modalUsername" placeholder="用户名" class="account-modal-input">
-				<input id="modalPassword" type="password" placeholder="密码" class="account-modal-input" style="display:none">
-				<select id="modalRole" class="account-modal-select" title="角色" data-custom>
-					<option value="admin">Administrator</option>
-					<option value="user">User</option>
-					<option value="guest">Guest</option>
-				</select>
-				<select id="modalStatus" class="account-modal-select" title="状态" data-custom>
-					<option value="online">在线</option>
-					<option value="offline">离线</option>
-					<option value="busy">忙碌</option>
-				</select>
-				<div class="account-modal-buttons">
-					<button id="modalCancel" class="settings-btn">取消</button>
-					<button id="modalSave" class="settings-btn account-modal-save-btn">保存</button>
-				</div>
-			</div>
-		</div>
-	</div>
+  <!-- 编辑 / 添加 模态 -->
+  <div id="accountModal" class="account-modal">
+    <div class="account-modal-content">
+      <h3 id="modalTitle">编辑账户</h3>
+      <div class="account-modal-form">
+        <input id="modalUsername" placeholder="用户名" class="account-modal-input">
+        <input id="modalPassword" type="password" placeholder="密码" class="account-modal-input" style="display:none">
+        <input id="modalName" placeholder="姓名" class="account-modal-input">
+        <select id="modalRole" class="account-modal-select" title="角色" data-custom>
+          <option value="">加载中...</option>
+        </select>
+        <input id="modalSubject" placeholder="任教科目" class="account-modal-input">
+        <input id="modalTitle" placeholder="职务/职称" class="account-modal-input">
+        <div class="account-modal-field">
+          <label class="account-modal-label">负责班级</label>
+          <div id="managedNodesContainer" class="managed-nodes-container">
+            <div class="class-checkboxes" id="classCheckboxes"></div>
+          </div>
+        </div>
+        <div class="account-modal-buttons">
+          <button id="modalCancel" class="settings-btn">取消</button>
+          <button id="modalSave" class="settings-btn account-modal-save-btn">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 	<!-- 登录状态栏 -->
 	<div id="loginStatus" class="login-status" style="display:none">

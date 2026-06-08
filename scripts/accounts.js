@@ -119,6 +119,9 @@ document.addEventListener('DOMContentLoaded', function() {
 var authToken = null;
 var authUsername = null;
 var authRole = null;
+var rolesList = [];
+var orgNodes = [];
+var editingUsername = null;
 
 function initAuth() {
     var stored = localStorage.getItem('manager_auth');
@@ -183,32 +186,38 @@ function onAuthSuccess(username, token, role) {
     if (displayEl) {
         displayEl.textContent = '已登录: ' + username;
     }
-    if (badgeEl) {
-        var isAdmin = (role === 'admin');
-        badgeEl.textContent = isAdmin ? '管理员' : '访客';
-        badgeEl.className = 'role-badge ' + (isAdmin ? 'role-admin' : 'role-guest');
-    }
+    loadRoles(function() {
+        if (badgeEl) {
+            var roleObj = rolesList.find(function(r) { return r.id === role; });
+            badgeEl.textContent = roleObj ? roleObj.name : (role || '用户');
+            badgeEl.className = 'role-badge role-' + role;
+        }
+    });
+    loadOrgNodes();
+}
+
+function hasPermission(perm) {
+    var roleObj = rolesList.find(function(r) { return r.id === authRole; });
+    return roleObj && roleObj.permissions && roleObj.permissions.indexOf(perm) !== -1;
 }
 
 function applyRoleBasedUI() {
-    var isAdmin = (authRole === 'admin');
+    var canManage = authRole === 'admin' || hasPermission('manage_users');
     var addBtn = document.getElementById('addAccountBtn');
     if (addBtn) {
-        addBtn.disabled = !isAdmin;
-        addBtn.title = isAdmin ? '' : '仅管理员可执行此操作';
+        addBtn.disabled = !canManage;
+        addBtn.title = canManage ? '' : '权限不足';
     }
     var saveBtn = document.getElementById('modalSave');
     if (saveBtn) {
-        saveBtn.disabled = !isAdmin;
+        saveBtn.disabled = !canManage;
     }
 }
 
 function checkWritePermission() {
-    if (authRole !== 'admin') {
-        showNotification('权限不足，仅管理员可执行此操作', 'error');
-        return false;
-    }
-    return true;
+    if (authRole === 'admin' || hasPermission('manage_users')) return true;
+    showNotification('权限不足，仅管理员可执行此操作', 'error');
+    return false;
 }
 
 // ========== 离线队列 ==========
@@ -431,7 +440,7 @@ function renderList(data, replace) {
         tbody.innerHTML = '';
     }
 
-    var isAdmin = (authRole === 'admin');
+    var canManage = (authRole === 'admin' || hasPermission('manage_users'));
     var users = data.users || [];
     users.forEach(function(user) {
         var tr = document.createElement('tr');
@@ -454,11 +463,19 @@ function renderList(data, replace) {
             statusText = '离线';
         }
 
-        var disabledAttr = isAdmin ? '' : ' disabled title="仅管理员可执行此操作"';
-        tr.innerHTML = '<td>' + escapeHtml(user.username) + '</td>'
+        var disabledAttr = canManage ? '' : ' disabled title="权限不足"';
+        tr.innerHTML = '<td class="clickable-row">' + escapeHtml(user.username) + '</td>'
+            + '<td>' + escapeHtml(user.name || user.username) + '</td>'
             + '<td>' + escapeHtml(getRoleDisplayName(user.role)) + '</td>'
             + '<td><span class="status ' + statusClass + '">' + statusText + '</span></td>'
             + '<td><button class="delete-btn" data-username="' + escapeHtml(user.username) + '"' + disabledAttr + '>删除</button></td>';
+        tr.setAttribute('data-username', user.username);
+        tr.style.cursor = 'pointer';
+        tr.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delete-btn')) return;
+            if (!canManage) return;
+            openAccountModal(false, user);
+        });
         tbody.appendChild(tr);
     });
 
@@ -489,7 +506,7 @@ function appendToList(data) {
     var tbody = document.getElementById('accountsTableBody');
     if (!tbody) return;
 
-    var isAdmin = (authRole === 'admin');
+    var canManage = (authRole === 'admin' || hasPermission('manage_users'));
     var users = data.users || [];
     users.forEach(function(user) {
         var tr = document.createElement('tr');
@@ -512,11 +529,19 @@ function appendToList(data) {
             statusText = '离线';
         }
 
-        var disabledAttr = isAdmin ? '' : ' disabled title="仅管理员可执行此操作"';
-        tr.innerHTML = '<td>' + escapeHtml(user.username) + '</td>'
+        var disabledAttr = canManage ? '' : ' disabled title="权限不足"';
+        tr.innerHTML = '<td class="clickable-row">' + escapeHtml(user.username) + '</td>'
+            + '<td>' + escapeHtml(user.name || user.username) + '</td>'
             + '<td>' + escapeHtml(getRoleDisplayName(user.role)) + '</td>'
             + '<td><span class="status ' + statusClass + '">' + statusText + '</span></td>'
             + '<td><button class="delete-btn" data-username="' + escapeHtml(user.username) + '"' + disabledAttr + '>删除</button></td>';
+        tr.setAttribute('data-username', user.username);
+        tr.style.cursor = 'pointer';
+        tr.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delete-btn')) return;
+            if (!canManage) return;
+            openAccountModal(false, user);
+        });
         tbody.appendChild(tr);
     });
 
@@ -571,18 +596,25 @@ function saveAccount() {
     var modalUsername = document.getElementById('modalUsername');
     var modalPassword = document.getElementById('modalPassword');
     var modalRole = document.getElementById('modalRole');
-    var modalStatus = document.getElementById('modalStatus');
+    var modalName = document.getElementById('modalName');
+    var modalSubject = document.getElementById('modalSubject');
+    var modalTitleInput = document.getElementById('modalTitle');
 
     var username = modalUsername.value.trim();
     var password = modalPassword.value;
     var role = modalRole.value;
+    var name = modalName ? modalName.value.trim() : username;
+    var subject = modalSubject ? modalSubject.value.trim() : '';
+    var titleVal = modalTitleInput ? modalTitleInput.value.trim() : '';
+    var managedNodes = getSelectedClassNodes();
 
     if (!username) {
         showNotification('用户名不能为空', 'error');
         return;
     }
 
-    if (!password) {
+    var isAdd = !editingUsername;
+    if (isAdd && !password) {
         showNotification('密码不能为空', 'error');
         return;
     }
@@ -592,19 +624,25 @@ function saveAccount() {
     saveBtn.textContent = '保存中...';
 
     var server = getServerConfig();
-    authFetch(server.protocol + '://' + server.ip + ':' + server.port + '/api/accounts', {
-        method: 'POST',
+    var body = { role: role, name: name, subject: subject, title: titleVal, managedNodes: managedNodes };
+    if (isAdd) {
+        body.username = username;
+        body.password = password;
+    }
+
+    var url = server.protocol + '://' + server.ip + ':' + server.port + '/api/accounts'
+        + (isAdd ? '' : '/' + encodeURIComponent(editingUsername));
+    var method = isAdd ? 'POST' : 'PUT';
+
+    authFetch(url, {
+        method: method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            username: username,
-            password: password,
-            role: role
-        })
+        body: JSON.stringify(body)
     })
         .then(function(res) { return res.json(); })
         .then(function(data) {
             if (data.success) {
-                showNotification('账户 "' + username + '" 已创建', 'success');
+                showNotification(isAdd ? '账户 "' + username + '" 已创建' : '账户 "' + editingUsername + '" 已更新', 'success');
                 closeAccountModal();
                 accountsCache.list = null;
                 accountsCache.listTime = 0;
@@ -612,17 +650,19 @@ function saveAccount() {
                 accountsCache.statsTime = 0;
                 refreshAccounts();
             } else {
-                showNotification('创建失败: ' + (data.message || '未知错误'), 'error');
+                showNotification((isAdd ? '创建' : '更新') + '失败: ' + (data.message || '未知错误'), 'error');
             }
         })
         .catch(function() {
-            addToOfflineQueue({ op: 'add', data: { username: username, password: password, role: role } });
+            if (isAdd) {
+                addToOfflineQueue({ op: 'add', data: body });
+            }
             closeAccountModal();
         })
         .finally(function() {
             saveBtn.disabled = false;
             saveBtn.textContent = '保存';
-            modalPassword.value = '';
+            if (modalPassword) modalPassword.value = '';
         });
 }
 
@@ -670,12 +710,8 @@ function escapeHtml(str) {
 }
 
 function getRoleDisplayName(role) {
-    var map = {
-        'admin': 'Administrator',
-        'user': 'User',
-        'guest': 'Guest'
-    };
-    return map[role] || role || 'User';
+    var found = rolesList.find(function(r) { return r.id === role; });
+    return found ? found.name : (role || '未知');
 }
 
 // ========== 原有函数 ==========
@@ -802,22 +838,34 @@ function openAccountModal(isAddMode, accountData) {
     var modalUsername = document.getElementById('modalUsername');
     var modalPassword = document.getElementById('modalPassword');
     var modalRole = document.getElementById('modalRole');
-    var modalStatus = document.getElementById('modalStatus');
+    var modalName = document.getElementById('modalName');
+    var modalSubject = document.getElementById('modalSubject');
+    var modalTitleInput = document.getElementById('modalTitle');
+
+    populateRoleSelect();
 
     if (isAddMode) {
+        editingUsername = null;
         modalTitle.textContent = '添加账户';
         modalUsername.value = '';
         modalPassword.value = '';
         modalPassword.style.display = '';
-        modalRole.value = 'user';
-        modalStatus.value = 'offline';
+        modalRole.value = 'student';
+        modalName.value = '';
+        if (modalSubject) modalSubject.value = '';
+        if (modalTitleInput) modalTitleInput.value = '';
         modalUsername.disabled = false;
+        clearClassCheckboxes();
     } else {
-        modalTitle.textContent = '编辑账户';
+        editingUsername = accountData ? accountData.username : null;
+        modalTitle.textContent = '编辑账户 - ' + (editingUsername || '');
         if (accountData) {
             modalUsername.value = accountData.username || '';
-            modalRole.value = accountData.role || 'user';
-            modalStatus.value = accountData.status || 'offline';
+            modalRole.value = accountData.role || 'student';
+            modalName.value = accountData.name || '';
+            if (modalSubject) modalSubject.value = accountData.subject || '';
+            if (modalTitleInput) modalTitleInput.value = accountData.title || '';
+            renderClassCheckboxes(accountData.managedNodes || []);
         }
         modalPassword.style.display = 'none';
         modalUsername.disabled = true;
@@ -829,4 +877,87 @@ function openAccountModal(isAddMode, accountData) {
 function closeAccountModal() {
     var modal = document.getElementById('accountModal');
     modal.classList.remove('show');
+}
+
+// ========== 角色和班级 ==========
+
+function loadRoles(callback) {
+    var server = getServerConfig();
+    fetch(server.protocol + '://' + server.ip + ':' + server.port + '/api/accounts/roles')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) {
+                rolesList = data.roles || [];
+            }
+            if (callback) callback();
+        })
+        .catch(function() {
+            if (callback) callback();
+        });
+}
+
+function populateRoleSelect() {
+    var sel = document.getElementById('modalRole');
+    if (!sel) return;
+    sel.innerHTML = '';
+    if (rolesList.length === 0) {
+        sel.innerHTML = '<option value="student">学生</option><option value="teacher">教师</option><option value="admin">管理员</option>';
+        return;
+    }
+    rolesList.forEach(function(r) {
+        var opt = document.createElement('option');
+        opt.value = r.id;
+        opt.textContent = r.name;
+        sel.appendChild(opt);
+    });
+}
+
+function loadOrgNodes() {
+    var server = getServerConfig();
+    fetch(server.protocol + '://' + server.ip + ':' + server.port + '/api/org/nodes/flat')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) {
+                orgNodes = data.nodes || [];
+            }
+        })
+        .catch(function() {});
+}
+
+function renderClassCheckboxes(selectedNodes) {
+    var container = document.getElementById('classCheckboxes');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (orgNodes.length === 0) {
+        container.innerHTML = '<span class="no-nodes-hint">（暂无组织架构数据）</span>';
+        return;
+    }
+
+    orgNodes.forEach(function(node) {
+        var label = document.createElement('label');
+        label.className = 'class-checkbox-label';
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = node.id;
+        cb.className = 'class-checkbox';
+        if (selectedNodes.indexOf(node.id) !== -1) cb.checked = true;
+        var indent = '--'.repeat(Math.max(0, node.depth - 1));
+        var txt = document.createTextNode((indent ? indent + ' ' : '') + node.name + ' (' + node.type + ')');
+        label.appendChild(cb);
+        label.appendChild(txt);
+        container.appendChild(label);
+    });
+}
+
+function clearClassCheckboxes() {
+    var container = document.getElementById('classCheckboxes');
+    if (container) container.innerHTML = '<span class="no-nodes-hint">（打开编辑后加载）</span>';
+}
+
+function getSelectedClassNodes() {
+    var checkboxes = document.querySelectorAll('#classCheckboxes .class-checkbox:checked');
+    var nodes = [];
+    checkboxes.forEach(function(cb) { nodes.push(cb.value); });
+    return nodes;
 }

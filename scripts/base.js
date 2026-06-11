@@ -1,5 +1,19 @@
 // oxlint-disable no-unused-vars
 
+// 应用已保存的主题（所有页面通用）
+(function applyStoredTheme() {
+    try {
+        const saved = localStorage.getItem('savedTheme');
+        if (saved) {
+            const obj = JSON.parse(saved);
+            if (obj.htmlClass) document.documentElement.className = obj.htmlClass;
+            if (obj.fontSize) document.documentElement.style.setProperty('--font-size', obj.fontSize);
+        }
+    } catch(e) {
+        console.error('应用已保存主题时出错：', e);
+    }
+})();
+
 // 全局基础功能函数
 // 跳转到新窗口
 function toNewWindow(url) {
